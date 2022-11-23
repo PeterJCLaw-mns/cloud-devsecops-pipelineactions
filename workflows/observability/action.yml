@@ -22,7 +22,8 @@ runs:
   steps:
     - name: Check out repository code
       uses: actions/checkout@v2
-
+      if: ${{inputs.set_newRelic_Deployment_marker == 'true'}}
+      
     - name: Create New Relic deployment marker
       uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/observability/newrelic_deploymarker@v1.1.0
       with:
@@ -32,3 +33,4 @@ runs:
         git_commit_id: ${{inputs.git_commit_id}}
         comment: ${{inputs.comment}}
         newRelic_user: ${{inputs.newRelic_user}}
+      if: ${{inputs.set_newRelic_Deployment_marker == 'true'}}  
