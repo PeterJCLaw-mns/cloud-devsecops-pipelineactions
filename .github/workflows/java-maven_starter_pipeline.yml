@@ -194,7 +194,7 @@ jobs:
   
   Code_Quality_Scan:
     runs-on: ubuntu-latest #need to use self hosted runner for sonarqube.
-    needs: Build_Test_and_Deploy_Package
+    needs: [pre-work-setup, Build_Test_and_Deploy_Package]
     environment: Non-prod
     continue-on-error: true
     steps:
