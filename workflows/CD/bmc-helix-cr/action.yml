@@ -1,0 +1,105 @@
+name: 'BMC Helix Integration & CR creation'
+description: 'Deployment using helm charts'
+
+inputs:
+  portfolio:
+    required: true
+  start_date:
+    description: 'Change Implementation Start Date (YYYY-MM-DDTHH:MM:SS)'
+    required: true
+  end_date:
+    description: 'Change Implementation End Date (YYYY-MM-DDTHH:MM:SS)'
+    required: true
+  app_name:
+    description: 'Application Name'
+    required: true
+  change_description:
+    description: 'Change Description'
+    required: true
+  change_category:
+    description: 'Change Category'
+    required: true
+  outage_required:
+    description: 'Outage Required?'
+    required: true
+  product_four_wall:
+    description: 'Product 4 Wall Change?'
+    required: true
+  business_impact:
+    description: 'Business Impact'
+    required: true
+  risk_impact:
+    description: 'Risk and Impact assessment agreement'
+    required: true
+  bmc_username:
+    required: true
+  bmc_password:
+    required: true
+  remedy_url:
+    required: false
+    default: 'https://mnscorp-rod-qa-restapi.onbmc.com'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get BMC Remedy API token
+      id: bmcremedylogin
+      uses: fjogeleit/http-request-action@master
+      with:
+        url: "${{inputs.remedy_url}}/api/jwt/login"  
+        method: 'POST'
+        contentType: application/x-www-form-urlencoded     
+        data: '{"username": "${{inputs.bmc_username}}", "password": "${{ inputs.bmc_password }}"}'
+        
+    - name: Show API response    
+      run: |
+         echo ${{ steps.bmcremedylogin.outputs.response }}
+         
+#     - name: Get Product Category details 
+#       id: bmcremedyprodcat
+#       uses: fjogeleit/http-request-action@master
+#       with:
+#         url: "${{inputs.remedy_url}}/api/arsys/v1/entry/PCT:Product Catalog"
+#         method: 'GET'
+#         customHeaders: '{"Authorization": "AR-JWT ${{ steps.bmcremedylogin.outputs.response }}"}'  
+#         data: '{"username": "${{inputs.bmc_username}}", "password": "${{ inputs.bmc_password }}"}'      
+      
+    - name: Invoke Helix Endpoint
+      id: requestbmc
+      uses: fjogeleit/http-request-action@master
+      with:
+        url: 'https://mnscorp.jitterbit.eu/mnscorp-dev-ca/gitHubAutoCr/createcr'        
+        method: 'POST'
+        timeout: 80000
+        username: github
+        password: ${{ inputs.bmc_password }}
+        #All dates passed here will be dynamically parameterized, hence no need to get it from the Engineers
+        data: >-
+          {
+          "values":
+          {
+              
+              "Change Initiated Portfolio":  "${{ inputs.portfolio }}",
+              "Requested Start Date":  "${{ inputs.start_date }}",
+              "Requested End Date":  "${{ inputs.end_date }}",
+              "Product Cat Tier 1(2)": "Network",
+              "Product Cat Tier 2 (2)": "Switch",
+              "Product Cat Tier 3 (2)": "Firewall",
+              "Product Name (2)": "Palo Alto",
+              "Manufacturer (2)": "Palo Alto",
+              "Detailed Description": "${{ inputs.change_description }}" ,
+              "Change Category*": "${{ inputs.change_category }}",
+              "TemplateID": "IDGDZNKNB42FKAR0JR4QRJ04VW5KAS"
+          }
+          }
+    - name: Get Response from BMC Helix and Conflict check
+      if: always()
+      run: |
+       echo ${{ steps.requestbmc.outputs.response }} 
+       if [[ ${{ steps.requestbmc.outputs.response }}  == *"false"* ]]
+       then
+        echo "Conflicting changes present, hence deployment needs to be rescheduled"
+        exit 1
+       else
+        echo "No Conflcits, deployment can be planned. CR is raised in BMC Remedy"
+       fi
