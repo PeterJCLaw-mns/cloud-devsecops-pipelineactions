@@ -54,7 +54,8 @@ runs:
     - name: Show API response    
       run: |
          echo ${{ steps.bmcremedylogin.outputs.response }}
-         
+      shell: bash
+      
 #     - name: Get Product Category details 
 #       id: bmcremedyprodcat
 #       uses: fjogeleit/http-request-action@master
@@ -103,3 +104,4 @@ runs:
        else
         echo "No Conflcits, deployment can be planned. CR is raised in BMC Remedy"
        fi
+      shell: bash
