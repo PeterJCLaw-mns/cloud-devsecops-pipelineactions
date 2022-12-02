@@ -79,7 +79,7 @@ runs:
 
         
     - name: Download Results
-      uses: fortify/gha-fod-generate-sarif@v1.1.1
+      uses: fortify/gha-fod-generate-sarif@v1.1.2
       with:
         base-url: https://emea.fortify.com/
         client-id: ${{ inputs.sast_api_key }}
