@@ -35,7 +35,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-      #- uses: actions/checkout@v2
+      #- uses: actions/checkout@v2 "removing as this does not work for cicdhopper"
           
       - name: Setup NodeJs with artifact registry
         uses: actions/setup-node@v2
