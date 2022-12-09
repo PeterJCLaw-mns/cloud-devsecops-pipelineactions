@@ -123,7 +123,14 @@ runs:
     - name: AKS Deploy basic
       run: |
         cd ./${{ inputs.helm_chart_path }}
-        helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}'
-        echo ${{env.image}}
+        
+        if [ -z ${{inputs.image_name}} ]; then
+          echo "No image name and tag provided using values set in helm arguments" 
+          helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}'
+        else
+          echo " Using full image name and tag provided as inputs "
+          helm upgrade --install ${{inputs.application_release_name}}  . --set 'image.repository=${{ inputs.image_name }}' --set 'image.tag=${{inputs.image_tag}}' '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}'
+        fi
+        
       shell: bash
       if: ${{ inputs.create_namespace != 'true' && inputs.dry_run != 'true' }}  
