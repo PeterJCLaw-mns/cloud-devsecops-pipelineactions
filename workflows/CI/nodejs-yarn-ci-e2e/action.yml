@@ -44,8 +44,8 @@ runs:
     
     - run: echo Hello, You are Executing Composite action to Execute Build
       shell: bash
-    - name: Checkout
-      uses: actions/checkout@v2
+#     - name: Checkout
+#       uses: actions/checkout@v2
     - uses: c-hive/gha-yarn-cache@v2.1.0
     - name: Setup NodeJs
       uses: actions/setup-node@v2
