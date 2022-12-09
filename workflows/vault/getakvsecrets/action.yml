@@ -39,4 +39,3 @@ runs:
       with:
         keyvault: ${{inputs.keyvault}} # name of key vault in Azure portal
         secrets: ${{inputs.secret_keys}} # comma separated list of secret keys to fetch from key vault 
-      
