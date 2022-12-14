@@ -22,16 +22,15 @@ inputs:
     required: false
   sarif_results_file_name:
     required: false
-    
-   
-  
+     
   
 runs:
   using: "composite"
   steps:
-
       
 ########## Login to Registry server if Registru server info is provided ########  
+
+      
     - name: Login to Registry Server 
       if: ${{ inputs.registry_server && ( !contains(inputs.registry_server, 'local') && !contains(inputs.registry_server,'docker.io') ) }}
       uses: Azure/docker-login@v1
@@ -47,6 +46,47 @@ runs:
          docker pull ${{ inputs.registry_server }}/${{inputs.image_name}}:${{ inputs.image_tag }}
       shell: bash
       
+   
+    - name: pull image from docker hub
+      if: ${{ !inputs.registry_server || contains(inputs.registry_server,'docker.io') }}
+      run: |
+         echo docker pull ${{inputs.image_name}}:${{ inputs.image_tag }}
+         docker pull ${{inputs.image_name}}:${{ inputs.image_tag }}
+      shell: bash  
+
+      
+    - name: Prisma Cloud image scan
+      id: scan-selfhosted
+      uses: PaloAltoNetworks/prisma-cloud-scan@v1.2.0
+      with:
+        pcc_console_url: ${{ inputs.container_scan_url }}
+        pcc_user: ${{ inputs.container_scan_user }}
+        pcc_pass: ${{ inputs.container_scan_password }}
+        image_name: ${{ inputs.registry_server }}/${{inputs.image_name}}:${{inputs.image_tag}}
+        containerized: yes
+        #results_file: ${{ inputs.json_results_file_name }}
+        #sarif_file: ${{ inputs.sarif_results_file_name }}
+      if: ${{ contains(runner.name, 'selfhosted') || contains(runner.name, 'runner-deployment')  }}
+      
+    - name: Prisma Cloud image scan
+      id: scan-githubhosted
+      uses: PaloAltoNetworks/prisma-cloud-scan@v1.2.0
+      with:
+        pcc_console_url: ${{ inputs.container_scan_url }}
+        pcc_user: ${{ inputs.container_scan_user }}
+        pcc_pass: ${{ inputs.container_scan_password }}
+        image_name: ${{ inputs.registry_server }}/${{inputs.image_name}}:${{inputs.image_tag}}
+        containerized: no
+        #results_file: ${{ inputs.json_results_file_name }}
+        #sarif_file: ${{ inputs.sarif_results_file_name }}
+      if: ${{ !contains(runner.name, 'selfhosted') && !contains(runner.name, 'runner-deployment')  }}    
+
+
+
+
+
+
+
 #     - name: pull image from registry server with containderd and no docker
 #       if: ${{ inputs.registry_server && ( !contains(inputs.registry_server, 'local') && !contains(inputs.registry_server,'docker.io') ) && contains(runner.name,'selfhosted')  }}
 #       run: |
@@ -54,28 +94,6 @@ runs:
 #          ctr pull -u "${{inputs.registry_username}}:${{inputs.registry_password}}" ${{ inputs.registry_server }}/${{inputs.image_name}}:${{ inputs.image_tag }}
 #          #./twistcli images scan --address ${{ inputs.container_scan_url }} --user ${{ inputs.container_scan_user }} --password ${{ inputs.container_scan_password }} --details ${{ inputs.registry_server }}/${{inputs.image_name}}:${{inputs.image_tag}}
 #       shell: bash        
-      
-    - name: pull image from docker hub
-      if: ${{ !inputs.registry_server || contains(inputs.registry_server,'docker.io') }}
-      run: |
-         echo docker pull ${{inputs.image_name}}:${{ inputs.image_tag }}
-         docker pull ${{inputs.image_name}}:${{ inputs.image_tag }}
-      shell: bash  
-      
-      
-
-      
-    - name: Prisma Cloud image scan
-      id: scan
-      uses: PaloAltoNetworks/prisma-cloud-scan@v1
-      with:
-        pcc_console_url: ${{ inputs.container_scan_url }}
-        pcc_user: ${{ inputs.container_scan_user }}
-        pcc_pass: ${{ inputs.container_scan_password }}
-        image_name: ${{ inputs.registry_server }}/${{inputs.image_name}}:${{inputs.image_tag}}
-        #results_file: ${{ inputs.json_results_file_name }}
-        #sarif_file: ${{ inputs.sarif_results_file_name }}
-
 
 
 
