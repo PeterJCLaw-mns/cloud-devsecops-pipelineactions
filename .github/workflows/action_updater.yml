@@ -14,11 +14,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           # [Required] Access token with `workflow` scope.
-          token: ${{ secrets.ACTION_UPDATER }}
+          token: ${{ secrets.SAML_GITHUB_TOKEN }}
 
       - name: Run GitHub Actions Version Updater
         uses: saadmk11/github-actions-version-updater@v0.7.1
         with:
           # [Required] Access token with `workflow` scope.
-          token: ${{ secrets.ACTION_UPDATER }}
+          token: ${{ secrets.SAML_GITHUB_TOKEN }}
           extra_workflow_locations: "./workflows"
