@@ -16,7 +16,10 @@ jobs:
           # [Required] Access token with `workflow` scope.
           token: ${{ secrets.ACTION_UPDATER }}
           
-      - run: ls -lart
+      - run: |
+          ls -lart
+          git -version
+          git status
       
       - name: Run GitHub Actions Version Updater
         uses: saadmk11/github-actions-version-updater@v0.7.1
