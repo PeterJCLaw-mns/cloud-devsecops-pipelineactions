@@ -18,7 +18,7 @@ jobs:
           
       - run: |
           ls -lart
-          git -version
+          git --version
           git status
       
       - name: Run GitHub Actions Version Updater
