@@ -11,11 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           # [Required] Access token with `workflow` scope.
           token: ${{ secrets.SAML_GITHUB_TOKEN }}
-
+          
+      - run: ls -lart
+      
       - name: Run GitHub Actions Version Updater
         uses: saadmk11/github-actions-version-updater@v0.7.1
         with:
