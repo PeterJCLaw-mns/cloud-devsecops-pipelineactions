@@ -2,9 +2,9 @@ name: Create Tag and release
 on:
   workflow_dispatch:
   
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - main
 
 jobs:
   Defining_Semantic_Version:
