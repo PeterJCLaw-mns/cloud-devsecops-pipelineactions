@@ -43,6 +43,16 @@ inputs:
     description: 'For Risk and Impact assessment agreement, please refer this link - https://confluence.marksandspencer.app'
     required: true
     
+  bmc_username:
+    required: true
+  bmc_password:
+    required: true
+  remedy_url:
+    required: false
+    default: 'https://mnscorp-rod-qa-restapi.onbmc.com'  
+  template_id:
+    required: true
+#"IDGDZNKNB42FKAR0JR4QRJ04VW5KAS"    
 #       release_to_prod_workflow:
 #         description: 'Provide your Release to Prod workflow which needs to be triggered after CR approval (<reponame>/<workflow_name.yml>)'
 #         required: true
@@ -110,7 +120,8 @@ runs:
       url: 'https://mnscorp-rod-qa-restapi.onbmc.com/api/jwt/login'        
       method: 'POST'
       contentType: application/x-www-form-urlencoded     
-      data: '{"username": "prabhu.mounagurusamy@mnscorp.net", "password": "${{ secrets.BMC_REMEDY_API_PASSWORD }}"}'
+      #data: '{"username": "prabhu.mounagurusamy@mnscorp.net", "password": "${{ secrets.BMC_REMEDY_API_PASSWORD }}"}'
+      data: '{"username": "${{inputs.bmc_username}}", "password": "${{ inputs.bmc_password }}"}'
 
   - name: Assign API response and Manipulate Input Product name
     run: |
@@ -162,7 +173,7 @@ runs:
             "Manufacturer (2)": "${{ env.PROD_MAN }}",
             "Detailed Description": "${{ inputs.change_description }} ${{ github.event.inputs.business_impact }}" ,
             "Change Category*": "${{ inputs.change_category }}",
-            "TemplateID": "IDGDZNKNB42FKAR0JR4QRJ04VW5KAS"
+            "TemplateID": "${{inputs.template_id}}" 
         }
         }
 
