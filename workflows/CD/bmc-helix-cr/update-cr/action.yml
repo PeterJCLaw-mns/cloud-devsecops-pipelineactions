@@ -1,0 +1,84 @@
+ame: 'BMC Helix Integration & CR creation'
+description: 'Deployment using helm charts'
+
+inputs:
+#   portfolio:
+#     required: true
+#   start_date:
+#     description: 'Change Implementation Start Date (YYYY-MM-DDTHH:MM:SS)'
+#     required: true
+#   end_date:
+#     description: 'Change Implementation End Date (YYYY-MM-DDTHH:MM:SS)'
+#     required: true
+#   app_name:
+#     description: 'Application Name'
+#     required: true
+#   change_description:
+#     description: 'Change Description'
+#     required: true
+#   change_category:
+#     description: 'Change Category'
+#     required: true
+#   outage_required:
+#     description: 'Outage Required?'
+#     required: true
+#   product_four_wall:
+#     description: 'Product 4 Wall Change?'
+#     required: true
+#   business_impact:
+#     description: 'Business Impact'
+#     required: true
+#   risk_impact:
+#     description: 'Risk and Impact assessment agreement'
+#     required: true
+  bmc_username:
+    required: true
+  bmc_password:
+    required: true
+  remedy_url:
+    required: false
+    default: 'https://mnscorp-rod-qa-restapi.onbmc.com'
+  template_id:
+    required: false
+    default: 'IDGDZNKNB42FKAR0JR4QRJ04VW5KAS'
+  change_request_id:
+    required: true
+    
+  update_status:
+    required: true
+    
+  update_reason:
+    required: true
+    default: 'updating CR'
+  
+runs:
+  using: "composite"
+  steps:
+    - name: Get BMC Remedy API token
+      id: bmcremedylogin
+      uses: fjogeleit/http-request-action@master
+      with:
+        url: "${{inputs.remedy_url}}/api/jwt/login"  
+        method: 'POST'
+        contentType: application/x-www-form-urlencoded     
+        data: '{"username": "${{inputs.bmc_username}}", "password": "${{ inputs.bmc_password }}"}'
+     
+     
+     - name: Update CR for Implementation in Progress
+        uses: fjogeleit/http-request-action@master
+        with:
+          url: 'https://mnscorp.jitterbit.eu/mnscorp-dev-ca/gitHubAutoCr/updatecr'        
+          method: 'POST'
+          timeout: 80000
+          username: ${{inputs.bmc_username}}
+          password: ${{ inputs.bmc_password }}
+          #All dates passed here will be dynamically parameterized, hence no need to get it from the Engineers
+          data: >-
+            {
+              "change_request_id": "${{ inputs.change_request_id }}",
+              "status": "${{ inputs.update_status }}",
+              "status_reason": "${{ inputs.update_reason }}"
+            }
+
+
+     
