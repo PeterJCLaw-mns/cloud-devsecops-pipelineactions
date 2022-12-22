@@ -89,7 +89,7 @@ runs:
     run: |
       echo "Invalid Date format, please check the input end date format"
       exit 1 
-    shell: bash
+    
     
   - name: Fail workflow for Risk and impact assessment agreement
     if:  "${{ github.event.inputs.risk_impact == 'No' }}"
@@ -106,7 +106,7 @@ runs:
           echo "Please provide future date/time for the CR start and end date"
           exit 1
       fi  
-    shell: bash
+    
 
   - name: Get BMC Remedy API token
     id: bmcremedylogin
