@@ -79,7 +79,7 @@ runs:
       if: ${{ inputs.action == 'create' }}
       
      
-    - name: Create new CR 
+    - name: Update CR 
       id: update-cr
       uses: DigitalInnocation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr/update-cr@branch-bmc-helix-action
       with:
@@ -100,7 +100,7 @@ runs:
         change_request_id: ${{inputs.change_request_id}}
         update_status: ${{inputs.update_status}}
         update_reason: ${{inputs.update_reason}}
-     if: ${{ inputs.action == 'update' }}
+      if: ${{ inputs.action == 'update' }}
   
   
     
