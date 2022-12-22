@@ -2,7 +2,6 @@ name: 'DevSecOps Application Security Actions'
 description: 'Running Fority Security Scans for project codes'
 
 inputs:
-  
   environment:
     required: true
   application_release_name:
@@ -11,6 +10,7 @@ inputs:
     required: false
   kube_config:
     required: false
+    
   is_helm_deployment:
     required: false
   helm_chart_path:
@@ -151,40 +151,5 @@ runs:
         startup_command: ${{inputs.startup_command}}
     
         
-  
-#     - name: Check out repository code
-#       uses: actions/checkout@v2
-
-#     - name: k8s-set-context
-#       uses: Azure/k8s-set-context@v1
-#       with:
-#         kubeconfig: ${{ inputs.kube_config }}     
-
-
-        
-#     - name: AKS Deploy and create Namespace Dry Run
-#       run: |
-#         cd ./${{ inputs.helm_chart_path }}
-#         ls -lart
-#         helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}' --create-namespace --dry-run --debug
-#         echo ${{env.image}}
-#       shell: bash
-#       if: ${{ inputs.dry_run == 'true' }}
-           
-#     - name: AKS Deploy and create Namespace
-#       run: |
-#         cd ./${{ inputs.helm_chart_path }}
-#         helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}' --create-namespace --atomic
-#         echo ${{env.image}}
-#       shell: bash
-#       if: ${{ inputs.create_namespace == 'true'}}
-      
-#     - name: AKS Deploy basic
-#       run: |
-#         cd ./${{ inputs.helm_chart_path }}
-#         helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}'
-#         echo ${{env.image}}
-#       shell: bash
-#       if: ${{ inputs.create_namespace != 'true' && inputs.dry_run != 'true' }}  
         
         
