@@ -4,41 +4,32 @@ inputs:
   portfolio:
     description: 'Change Initiated Portfolio'
     required: true
-
   start_date:
     description: 'Change Implementation Start Date (YYYY-MM-DDTHH:MM:SS)'
-    required: true
-    
+    required: true   
   end_date:
     description: 'Change Implementation End Date (YYYY-MM-DDTHH:MM:SS)'
-    required: true
-    
+    required: true  
   app_name:
     description: 'Application Name'
-    required: true
-    
+    required: true 
   change_description:
     description: 'Change Description'
-    required: true
-    
+    required: true 
   change_category:
     description: 'Change Category'
-    required: true
-    
+    required: true 
   outage_required:
     description: 'Outage Required?'
     required: true
-    default: 'No'
-    
+    default: 'No' 
   product_four_wall:
     description: 'Product 4 Wall Change?'
     required: true
-    default: 'Yes'
-    
+    default: 'Yes' 
   business_impact:
     description: 'Business Impact'
-    required: true
-    
+    required: true 
   risk_impact:
     description: 'For Risk and Impact assessment agreement, please refer this link - https://confluence.marksandspencer.app'
     required: true
@@ -52,6 +43,8 @@ inputs:
     default: 'https://mnscorp-rod-qa-restapi.onbmc.com'  
   template_id:
     required: true
+    
+    
 #"IDGDZNKNB42FKAR0JR4QRJ04VW5KAS"    
 #       release_to_prod_workflow:
 #         description: 'Provide your Release to Prod workflow which needs to be triggered after CR approval (<reponame>/<workflow_name.yml>)'
@@ -119,7 +112,8 @@ runs:
     id: bmcremedylogin
     uses: fjogeleit/http-request-action@master
     with:
-      url: 'https://mnscorp-rod-qa-restapi.onbmc.com/api/jwt/login'        
+      # url: 'https://mnscorp-rod-qa-restapi.onbmc.com/api/jwt/login'    
+      url: "${{inputs.remedy_url}}/api/jwt/login"
       method: 'POST'
       contentType: application/x-www-form-urlencoded     
       #data: '{"username": "prabhu.mounagurusamy@mnscorp.net", "password": "${{ secrets.BMC_REMEDY_API_PASSWORD }}"}'
@@ -159,8 +153,8 @@ runs:
       url: 'https://mnscorp.jitterbit.eu/mnscorp-dev-ca/gitHubAutoCr/createcr'        
       method: 'POST'
       timeout: 80000
-      username: github
-      password: ${{ secrets.BMC_HELIX_API_PASSWORD }}
+      username: ${{inputs.bmc_username}}
+      password: ${{ inputs.bmc_password }}
       #All dates passed here will be dynamically parameterized, hence no need to get it from the Engineers
       data: >-
         {
