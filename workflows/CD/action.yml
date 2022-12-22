@@ -39,7 +39,14 @@ inputs:
     required: false
   deployment_script_name:
     required: false
-    
+  release_strategy:
+    required: false
+    default: 'standard'
+  enable_canary:
+    required: false
+  canary_weightage:
+    required: false
+  
     
   is_azure_webapp_deployment:
     required: false
@@ -77,7 +84,7 @@ runs:
       shell: bash  
     - name: ========== Deploy project using helm ==========
       uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/helm@v1.1.13
-      if: ${{ inputs.is_helm_deployment == 'true'}}
+      if: ${{ inputs.is_helm_deployment == 'true' && inputs.release_strategy == 'standard'}}
       with:
         environment: ${{inputs.environment}}
         application_release_name: ${{inputs.application_release_name}}
@@ -96,6 +103,28 @@ runs:
         is_atomic: ${{inputs.is_atomic}}
         deployment_script_path: ${{inputs.deployment_script_path}}
         deployment_script_name: ${{inputs.deployment_script_name}}
+        
+    - name: ========== Deploy project using helm ==========
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/helm_blue_green@v1.1.13
+      if: ${{ inputs.is_helm_deployment == 'true' && inputs.release_strategy != 'standard'}}
+      with:
+        environment: ${{inputs.environment}}
+        application_release_name: ${{inputs.application_release_name}}
+        release_version: ${{inputs.release_version}}
+        kube_config: ${{inputs.kube_config}}
+        is_helm_deployment: ${{inputs.is_helm_deployment}}
+        helm_chart_path: ${{inputs.helm_chart_path}}
+        helm_values_file: ${{inputs.helm_values_file}}
+        helm_values_file_path: ${{inputs.helm_values_file_path}}
+        image_name: ${{inputs.image_name}}
+        image_tag: ${{inputs.image_tag}}
+        cluster_namespace: ${{inputs.cluster_namespace}}
+        create_namespace: ${{inputs.create_namespace}}
+        helm_argument: ${{inputs.helm_argument}}
+        dry_run: ${{inputs.dry_run}}
+        is_atomic: ${{inputs.is_atomic}}
+        deployment_script_path: ${{inputs.deployment_script_path}}
+        deployment_script_name: ${{inputs.deployment_script_name}}    
         
     - name: ========== AZURE WEB APP Deployment ==========
       uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/azure-webapp@v1.1.13
