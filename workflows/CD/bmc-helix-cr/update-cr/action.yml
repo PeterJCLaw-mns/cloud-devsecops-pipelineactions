@@ -31,6 +31,7 @@ inputs:
 #   risk_impact:
 #     description: 'Risk and Impact assessment agreement'
 #     required: true
+
   bmc_username:
     required: true
   bmc_password:
@@ -41,12 +42,11 @@ inputs:
   template_id:
     required: false
     default: 'IDGDZNKNB42FKAR0JR4QRJ04VW5KAS'
-  change_request_id:
-    required: true
     
+  change_request_id:
+    required: true 
   update_status:
     required: true
-    
   update_reason:
     required: true
     default: 'updating CR'
@@ -63,22 +63,26 @@ runs:
         contentType: application/x-www-form-urlencoded     
         data: '{"username": "${{inputs.bmc_username}}", "password": "${{ inputs.bmc_password }}"}'
      
-     
-     - name: Update CR for Implementation in Progress
-        uses: fjogeleit/http-request-action@master
-        with:
-          url: 'https://mnscorp.jitterbit.eu/mnscorp-dev-ca/gitHubAutoCr/updatecr'        
-          method: 'POST'
-          timeout: 80000
-          username: ${{inputs.bmc_username}}
-          password: ${{ inputs.bmc_password }}
-          #All dates passed here will be dynamically parameterized, hence no need to get it from the Engineers
-          data: >-
-            {
-              "change_request_id": "${{ inputs.change_request_id }}",
-              "status": "${{ inputs.update_status }}",
-              "status_reason": "${{ inputs.update_reason }}"
-            }
+    - name: Assign API response and Manipulate Input Product name
+      run: |
+         echo "TOKEN=${{ steps.bmcremedylogin.outputs.response }}" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Update CR for Implementation in Progress
+      uses: fjogeleit/http-request-action@master
+      with:
+        url: 'https://mnscorp.jitterbit.eu/mnscorp-dev-ca/gitHubAutoCr/updatecr'        
+        method: 'POST'
+        timeout: 80000
+        username: ${{inputs.bmc_username}}
+        password: ${{ inputs.bmc_password }}
+        #All dates passed here will be dynamically parameterized, hence no need to get it from the Engineers
+        data: >-
+          {
+            "change_request_id": "${{ inputs.change_request_id }}",
+            "status": "${{ inputs.update_status }}",
+            "status_reason": "${{ inputs.update_reason }}"
+          }
 
 
      
