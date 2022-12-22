@@ -1,0 +1,180 @@
+name: BMC Integration
+
+inputs:
+  portfolio:
+    description: 'Change Initiated Portfolio'
+    required: true
+
+  start_date:
+    description: 'Change Implementation Start Date (YYYY-MM-DDTHH:MM:SS)'
+    required: true
+    
+  end_date:
+    description: 'Change Implementation End Date (YYYY-MM-DDTHH:MM:SS)'
+    required: true
+    
+  app_name:
+    description: 'Application Name'
+    required: true
+    
+  change_description:
+    description: 'Change Description'
+    required: true
+    
+  change_category:
+    description: 'Change Category'
+    required: true
+    
+  outage_required:
+    description: 'Outage Required?'
+    required: true
+    default: 'No'
+    
+  product_four_wall:
+    description: 'Product 4 Wall Change?'
+    required: true
+    default: 'Yes'
+    
+  business_impact:
+    description: 'Business Impact'
+    required: true
+    
+  risk_impact:
+    description: 'For Risk and Impact assessment agreement, please refer this link - https://confluence.marksandspencer.app'
+    required: true
+    
+#       release_to_prod_workflow:
+#         description: 'Provide your Release to Prod workflow which needs to be triggered after CR approval (<reponame>/<workflow_name.yml>)'
+#         required: true
+#         type: string         
+        
+  
+runs:
+  using: "composite"
+  steps:
+  - name: Display all inputs
+    run: |
+      echo "${{ inputs.portfolio }}"
+      echo "${{ inputs.start_date }}"
+      echo ${{ inputs.end_date }}
+      echo ${{ inputs.change_description }}
+      echo ${{ inputs.change_category }}
+
+  - name: Validate Start date
+    uses: actions-ecosystem/action-regex-match@v2
+    id: regex-match-start-date
+    with:
+      text: ${{ inputs.start_date }}
+      regex: '^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})$'
+
+  - name: Validate End date
+    uses: actions-ecosystem/action-regex-match@v2
+    id: regex-match-end-date
+    with:
+      text: ${{ inputs.end_date }}
+      regex: '^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})$'    
+
+  - name: Fail workflow for invalid start date
+    if: ${{ steps.regex-match-start-date.outputs.match == '' }} 
+    run: |
+      echo "Invalid Date format, please check the input start date format"
+      exit 1
+
+  - name: Fail workflow for invalid end date
+    if: ${{ steps.regex-match-end-date.outputs.match == '' }} 
+    run: |
+      echo "Invalid Date format, please check the input end date format"
+      exit 1 
+
+  - name: Fail workflow for Risk and impact assessment agreement
+    if:  "${{ github.event.inputs.risk_impact == 'No' }}"
+    run: |
+      echo "Please follow the link provided and agree the risk & impact assessment"
+      exit 1 
+
+  - name: Fail workflow based on the input dates 
+    run: |
+      current_ts=$(date '+%Y-%m-%dT%T')
+      echo $current_ts
+      if [[ ${{ inputs.start_date }} < $current_ts ]]
+      then
+          echo "Please provide future date/time for the CR start and end date"
+          exit 1
+      fi  
+
+
+  - name: Get BMC Remedy API token
+    id: bmcremedylogin
+    uses: fjogeleit/http-request-action@master
+    with:
+      url: 'https://mnscorp-rod-qa-restapi.onbmc.com/api/jwt/login'        
+      method: 'POST'
+      contentType: application/x-www-form-urlencoded     
+      data: '{"username": "prabhu.mounagurusamy@mnscorp.net", "password": "${{ secrets.BMC_REMEDY_API_PASSWORD }}"}'
+
+  - name: Assign API response and Manipulate Input Product name
+    run: |
+       echo "TOKEN=${{ steps.bmcremedylogin.outputs.response }}" >> $GITHUB_ENV
+       echo "PROD_NAME_WITHOUT_SPACE=$(echo "${{ inputs.app_name }}" |  sed -e 's/ /%20/g')" >> $GITHUB_ENV
+
+
+  - name: Get Product Category details 
+    id: bmcremedyprodcat
+    run: |
+      echo "prodcut name" "${{ env.PROD_NAME_WITHOUT_SPACE }}"
+      curl -X GET "https://mnscorp-rod-qa-restapi.onbmc.com/api/arsys/v1/entry/PCT:Product%20Catalog?q=('Status'=\"Enabled\"%20AND%20'Product%20Name'%20=\"${{ env.PROD_NAME_WITHOUT_SPACE }}\")&fields=values(Product%20Categorization%20Tier%201,Product%20Categorization%20Tier%202,Product%20Categorization%20Tier%203,Product%20Name,Manufacturer)" \
+      -H "Authorization: AR-JWT ${{ env.TOKEN }}" \
+      -H "Content-Type: application/json" > $HOME/response.json
+      echo "PROD_CAT1=$(jq -r '.entries[0].values["Product Categorization Tier 1"]' $HOME/response.json)" >> $GITHUB_ENV
+      echo "PROD_CAT2=$(jq -r '.entries[0].values["Product Categorization Tier 2"]' $HOME/response.json)" >> $GITHUB_ENV
+      echo "PROD_CAT3=$(jq -r '.entries[0].values["Product Categorization Tier 3"]' $HOME/response.json)" >> $GITHUB_ENV
+      echo "PROD_MAN=$(jq -r '.entries[0].values["Manufacturer"]' $HOME/response.json)" >> $GITHUB_ENV
+
+  - name: Show Product category outpus    
+    run: |
+       echo "${{ env.PROD_CAT1 }}"
+       echo "${{ env.PROD_CAT2 }}"
+       echo "${{ env.PROD_CAT3 }}"
+       echo "${{ env.PROD_MAN }}"
+
+  - name: Conflict check and create CR
+    id: requestbmc
+    uses: fjogeleit/http-request-action@master
+    with:
+      url: 'https://mnscorp.jitterbit.eu/mnscorp-dev-ca/gitHubAutoCr/createcr'        
+      method: 'POST'
+      timeout: 80000
+      username: github
+      password: ${{ secrets.BMC_HELIX_API_PASSWORD }}
+      #All dates passed here will be dynamically parameterized, hence no need to get it from the Engineers
+      data: >-
+        {
+        "values":
+        {
+
+            "Change Initiated Portfolio":  "${{ inputs.portfolio }}",
+            "Requested Start Date":  "${{ inputs.start_date }}",
+            "Requested End Date":  "${{ inputs.end_date }}",
+            "Product Cat Tier 1(2)": "${{ env.PROD_CAT1 }}",
+            "Product Cat Tier 2 (2)": "${{ env.PROD_CAT2 }}",
+            "Product Cat Tier 3 (2)": "${{ env.PROD_CAT3 }}",
+            "Product Name (2)": "${{ inputs.app_name }}",
+            "Manufacturer (2)": "${{ env.PROD_MAN }}",
+            "Detailed Description": "${{ inputs.change_description }} ${{ github.event.inputs.business_impact }}" ,
+            "Change Category*": "${{ inputs.change_category }}",
+            "TemplateID": "IDGDZNKNB42FKAR0JR4QRJ04VW5KAS"
+        }
+        }
+
+  - name: Get Response from BMC Helix and Conflict check
+    run: |
+     echo ${{ steps.requestbmc.outputs.response }} 
+     if [[ ${{ steps.requestbmc.outputs.response }}  == *"change_id":"CRQ"* ]]
+     then
+      echo "Success ! CR is raised in BMC Remedy"
+      #exit 1
+     else
+      echo "CR is not created in BMC Remedy, need to check the workflow"
+     fi
+       
+       
