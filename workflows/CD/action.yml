@@ -124,6 +124,9 @@ runs:
         is_atomic: ${{inputs.is_atomic}}
         deployment_script_path: ${{inputs.deployment_script_path}}
         deployment_script_name: ${{inputs.deployment_script_name}}    
+        release_strategy: ${{inputs.release_strategy}}  
+        enable_canary: ${{inputs.enable_canary}}  
+        canary_weightage: ${{inputs.canary_weightage}}  
         
     - name: ========== AZURE WEB APP Deployment ==========
       uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/azure-webapp@v1.1.13
