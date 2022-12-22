@@ -112,7 +112,6 @@ runs:
         application_release_name: ${{inputs.application_release_name}}
         release_version: ${{inputs.release_version}}
         kube_config: ${{inputs.kube_config}}
-        is_helm_deployment: ${{inputs.is_helm_deployment}}
         helm_chart_path: ${{inputs.helm_chart_path}}
         helm_values_file: ${{inputs.helm_values_file}}
         helm_values_file_path: ${{inputs.helm_values_file_path}}
