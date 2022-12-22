@@ -2,7 +2,6 @@ name: 'DevSecOps Application Security Actions'
 description: 'Running Fority Security Scans for project codes'
 
 inputs:
-  
   environment:
     required: true
   application_release_name:
@@ -11,6 +10,7 @@ inputs:
     required: false
   kube_config:
     required: false
+    
   is_helm_deployment:
     required: false
   helm_chart_path:
@@ -39,7 +39,14 @@ inputs:
     required: false
   deployment_script_name:
     required: false
-    
+  release_strategy:
+    required: false
+    default: 'standard'
+  enable_canary:
+    required: false
+  canary_weightage:
+    required: false
+  
     
   is_azure_webapp_deployment:
     required: false
@@ -77,7 +84,7 @@ runs:
       shell: bash  
     - name: ========== Deploy project using helm ==========
       uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/helm@v1.1.13
-      if: ${{ inputs.is_helm_deployment == 'true'}}
+      if: ${{ inputs.is_helm_deployment == 'true' && inputs.release_strategy == 'standard'}}
       with:
         environment: ${{inputs.environment}}
         application_release_name: ${{inputs.application_release_name}}
@@ -96,6 +103,30 @@ runs:
         is_atomic: ${{inputs.is_atomic}}
         deployment_script_path: ${{inputs.deployment_script_path}}
         deployment_script_name: ${{inputs.deployment_script_name}}
+        
+    - name: ========== Deploy project using helm ==========
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/helm_blue_green@v1.1.13
+      if: ${{ inputs.is_helm_deployment == 'true' && inputs.release_strategy != 'standard'}}
+      with:
+        environment: ${{inputs.environment}}
+        application_release_name: ${{inputs.application_release_name}}
+        release_version: ${{inputs.release_version}}
+        kube_config: ${{inputs.kube_config}}
+        helm_chart_path: ${{inputs.helm_chart_path}}
+        helm_values_file: ${{inputs.helm_values_file}}
+        helm_values_file_path: ${{inputs.helm_values_file_path}}
+        image_name: ${{inputs.image_name}}
+        image_tag: ${{inputs.image_tag}}
+        cluster_namespace: ${{inputs.cluster_namespace}}
+        create_namespace: ${{inputs.create_namespace}}
+        helm_argument: ${{inputs.helm_argument}}
+        dry_run: ${{inputs.dry_run}}
+        is_atomic: ${{inputs.is_atomic}}
+        deployment_script_path: ${{inputs.deployment_script_path}}
+        deployment_script_name: ${{inputs.deployment_script_name}}    
+        release_strategy: ${{inputs.release_strategy}}  
+        enable_canary: ${{inputs.enable_canary}}  
+        canary_weightage: ${{inputs.canary_weightage}}  
         
     - name: ========== AZURE WEB APP Deployment ==========
       uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/azure-webapp@v1.1.13
@@ -120,40 +151,5 @@ runs:
         startup_command: ${{inputs.startup_command}}
     
         
-  
-#     - name: Check out repository code
-#       uses: actions/checkout@v2
-
-#     - name: k8s-set-context
-#       uses: Azure/k8s-set-context@v1
-#       with:
-#         kubeconfig: ${{ inputs.kube_config }}     
-
-
-        
-#     - name: AKS Deploy and create Namespace Dry Run
-#       run: |
-#         cd ./${{ inputs.helm_chart_path }}
-#         ls -lart
-#         helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}' --create-namespace --dry-run --debug
-#         echo ${{env.image}}
-#       shell: bash
-#       if: ${{ inputs.dry_run == 'true' }}
-           
-#     - name: AKS Deploy and create Namespace
-#       run: |
-#         cd ./${{ inputs.helm_chart_path }}
-#         helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}' --create-namespace --atomic
-#         echo ${{env.image}}
-#       shell: bash
-#       if: ${{ inputs.create_namespace == 'true'}}
-      
-#     - name: AKS Deploy basic
-#       run: |
-#         cd ./${{ inputs.helm_chart_path }}
-#         helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}'
-#         echo ${{env.image}}
-#       shell: bash
-#       if: ${{ inputs.create_namespace != 'true' && inputs.dry_run != 'true' }}  
         
         
