@@ -1,4 +1,4 @@
-name: BMC Integration
+name: Composite action to create CR in BMC Helix.
 
 inputs:
   portfolio:
@@ -69,7 +69,7 @@ runs:
       echo ${{ inputs.end_date }}
       echo ${{ inputs.change_description }}
       echo ${{ inputs.change_category }}
-
+    shell: bash
   - name: Validate Start date
     uses: actions-ecosystem/action-regex-match@v2
     id: regex-match-start-date
@@ -89,13 +89,15 @@ runs:
     run: |
       echo "Invalid Date format, please check the input start date format"
       exit 1
-
+    shell: bash
+    
   - name: Fail workflow for invalid end date
     if: ${{ steps.regex-match-end-date.outputs.match == '' }} 
     run: |
       echo "Invalid Date format, please check the input end date format"
       exit 1 
-
+    shell: bash
+    
   - name: Fail workflow for Risk and impact assessment agreement
     if:  "${{ github.event.inputs.risk_impact == 'No' }}"
     run: |
@@ -111,7 +113,7 @@ runs:
           echo "Please provide future date/time for the CR start and end date"
           exit 1
       fi  
-
+    shell: bash
 
   - name: Get BMC Remedy API token
     id: bmcremedylogin
@@ -127,7 +129,7 @@ runs:
     run: |
        echo "TOKEN=${{ steps.bmcremedylogin.outputs.response }}" >> $GITHUB_ENV
        echo "PROD_NAME_WITHOUT_SPACE=$(echo "${{ inputs.app_name }}" |  sed -e 's/ /%20/g')" >> $GITHUB_ENV
-
+    shell: bash
 
   - name: Get Product Category details 
     id: bmcremedyprodcat
@@ -140,14 +142,16 @@ runs:
       echo "PROD_CAT2=$(jq -r '.entries[0].values["Product Categorization Tier 2"]' $HOME/response.json)" >> $GITHUB_ENV
       echo "PROD_CAT3=$(jq -r '.entries[0].values["Product Categorization Tier 3"]' $HOME/response.json)" >> $GITHUB_ENV
       echo "PROD_MAN=$(jq -r '.entries[0].values["Manufacturer"]' $HOME/response.json)" >> $GITHUB_ENV
-
+    shell: bash
+    
   - name: Show Product category outpus    
     run: |
        echo "${{ env.PROD_CAT1 }}"
        echo "${{ env.PROD_CAT2 }}"
        echo "${{ env.PROD_CAT3 }}"
        echo "${{ env.PROD_MAN }}"
-
+    shell: bash
+    
   - name: Conflict check and create CR
     id: requestbmc
     uses: fjogeleit/http-request-action@master
@@ -187,5 +191,5 @@ runs:
      else
       echo "CR is not created in BMC Remedy, need to check the workflow"
      fi
-       
+    shell: bash       
        
