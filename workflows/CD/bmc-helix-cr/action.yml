@@ -63,8 +63,8 @@ runs:
       uses: DigitalInnocation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr/create-cr@branch-bmc-helix-action
       with:
         portfolio: ${{inputs.portfolio}}
-        start_date: ${{inputs.}}
-        end_date: ${{inputs.start_date}}
+        start_date: ${{inputs.start_date}}
+        end_date: ${{inputs.end_date}}
         app_name: ${{inputs.app_name}}
         change_description: ${{inputs.change_description}}
         change_category: ${{inputs.change_category}}
