@@ -38,6 +38,10 @@ inputs:
     required: true
   bmc_password:
     required: true
+  helix_username:
+    required: true
+  helix_password:
+    required: true
   remedy_url:
     required: false
     default: 'https://mnscorp-rod-qa-restapi.onbmc.com'  
@@ -155,8 +159,8 @@ runs:
       url: 'https://mnscorp.jitterbit.eu/mnscorp-dev-ca/gitHubAutoCr/createcr'        
       method: 'POST'
       timeout: 80000
-      username: ${{inputs.bmc_username}}
-      password: ${{ inputs.bmc_password }}
+      username: ${{inputs.helix_username}}
+      password: ${{ inputs.helix_password }}
       #All dates passed here will be dynamically parameterized, hence no need to get it from the Engineers
       data: >-
         {
