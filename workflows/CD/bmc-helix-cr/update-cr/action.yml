@@ -36,6 +36,11 @@ inputs:
     required: true
   bmc_password:
     required: true
+  helix_username:
+    required: true
+  helix_password:
+    required: true
+    
   remedy_url:
     required: false
     default: 'https://mnscorp-rod-qa-restapi.onbmc.com'
@@ -54,19 +59,19 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Get BMC Remedy API token
-      id: bmcremedylogin
-      uses: fjogeleit/http-request-action@master
-      with:
-        url: "${{inputs.remedy_url}}/api/jwt/login"  
-        method: 'POST'
-        contentType: application/x-www-form-urlencoded     
-        data: '{"username": "${{inputs.bmc_username}}", "password": "${{ inputs.bmc_password }}"}'
+#     - name: Get BMC Remedy API token
+#       id: bmcremedylogin
+#       uses: fjogeleit/http-request-action@master
+#       with:
+#         url: "${{inputs.remedy_url}}/api/jwt/login"  
+#         method: 'POST'
+#         contentType: application/x-www-form-urlencoded     
+#         data: '{"username": "${{inputs.bmc_username}}", "password": "${{ inputs.bmc_password }}"}'
      
-    - name: Assign API response and Manipulate Input Product name
-      run: |
-         echo "TOKEN=${{ steps.bmcremedylogin.outputs.response }}" >> $GITHUB_ENV
-      shell: bash
+#     - name: Assign API response and Manipulate Input Product name
+#       run: |
+#          echo "TOKEN=${{ steps.bmcremedylogin.outputs.response }}" >> $GITHUB_ENV
+#       shell: bash
 
     - name: Update CR for Implementation in Progress
       uses: fjogeleit/http-request-action@master
@@ -74,8 +79,8 @@ runs:
         url: 'https://mnscorp.jitterbit.eu/mnscorp-dev-ca/gitHubAutoCr/updatecr'        
         method: 'POST'
         timeout: 80000
-        username: ${{inputs.bmc_username}}
-        password: ${{ inputs.bmc_password }}
+        username: ${{inputs.helix_username}}
+        password: ${{ inputs.helix_password }}
         #All dates passed here will be dynamically parameterized, hence no need to get it from the Engineers
         data: >-
           {
