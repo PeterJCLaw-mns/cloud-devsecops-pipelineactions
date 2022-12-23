@@ -57,7 +57,7 @@ runs:
       
     - name: Prisma Cloud image scan
       id: scan-selfhosted
-      uses: PaloAltoNetworks/prisma-cloud-scan@v1.2.0
+      uses: PaloAltoNetworks/prisma-cloud-scan@v1.2.1
       with:
         pcc_console_url: ${{ inputs.container_scan_url }}
         pcc_user: ${{ inputs.container_scan_user }}
@@ -70,7 +70,7 @@ runs:
       
     - name: Prisma Cloud image scan
       id: scan-githubhosted
-      uses: PaloAltoNetworks/prisma-cloud-scan@v1.2.0
+      uses: PaloAltoNetworks/prisma-cloud-scan@v1.2.1
       with:
         pcc_console_url: ${{ inputs.container_scan_url }}
         pcc_user: ${{ inputs.container_scan_user }}
