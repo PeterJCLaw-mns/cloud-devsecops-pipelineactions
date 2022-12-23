@@ -32,10 +32,11 @@ inputs:
 #     description: 'Risk and Impact assessment agreement'
 #     required: true
 
-  bmc_username:
-    required: true
-  bmc_password:
-    required: true
+#   bmc_username:
+#     required: true
+#   bmc_password:
+#     required: true
+
   helix_username:
     required: true
   helix_password:
