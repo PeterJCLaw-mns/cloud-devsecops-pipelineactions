@@ -42,6 +42,10 @@ inputs:
   remedy_url:
     required: false
     default: 'https://mnscorp-rod-qa-restapi.onbmc.com'
+  helix_username:
+    required: true
+  helix_password:
+    required: true
     
   template_id:
     required: false
@@ -74,6 +78,8 @@ runs:
         risk_impact: ${{inputs.risk_impact}}
         bmc_username: ${{inputs.bmc_username}}
         bmc_password: ${{inputs.bmc_password}}
+        helix_username: ${{inputs.helix_username}}
+        helix_password: ${{inputs.helix_password}}
         remedy_url: ${{inputs.remedy_url}}
         template_id: ${{inputs.template_id}}
       if: ${{ inputs.action == 'create' }}
@@ -95,6 +101,8 @@ runs:
 #         risk_impact: ${{inputs.risk_impact}}
         bmc_username: ${{inputs.bmc_username}}
         bmc_password: ${{inputs.bmc_password}}
+        helix_username: ${{inputs.helix_username}}
+        helix_password: ${{inputs.helix_password}}
         remedy_url: ${{inputs.remedy_url}}
         template_id: ${{inputs.template_id}}
         change_request_id: ${{inputs.change_request_id}}
