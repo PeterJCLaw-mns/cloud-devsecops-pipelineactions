@@ -63,6 +63,7 @@ runs:
       echo ${{ inputs.change_description }}
       echo ${{ inputs.change_category }}
     shell: bash
+    
   - name: Validate Start date
     uses: actions-ecosystem/action-regex-match@v2
     id: regex-match-start-date
@@ -89,14 +90,15 @@ runs:
     run: |
       echo "Invalid Date format, please check the input end date format"
       exit 1 
-    
+    shell: bash
     
   - name: Fail workflow for Risk and impact assessment agreement
     if:  "${{ github.event.inputs.risk_impact == 'No' }}"
     run: |
       echo "Please follow the link provided and agree the risk & impact assessment"
       exit 1 
-
+    shell: bash
+    
   - name: Fail workflow based on the input dates 
     run: |
       current_ts=$(date '+%Y-%m-%dT%T')
@@ -106,7 +108,7 @@ runs:
           echo "Please provide future date/time for the CR start and end date"
           exit 1
       fi  
-    
+    shell: bash
 
   - name: Get BMC Remedy API token
     id: bmcremedylogin
