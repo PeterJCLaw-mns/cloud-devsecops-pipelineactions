@@ -59,14 +59,14 @@ inputs:
 runs:
   using: "composite"
   steps:
-  - name: Display all inputs
-    run: |
-      echo "${{ inputs.portfolio }}"
-      echo "${{ inputs.start_date }}"
-      echo ${{ inputs.end_date }}
-      echo ${{ inputs.change_description }}
-      echo ${{ inputs.change_category }}
-    shell: bash
+#   - name: Display all inputs
+#     run: |
+#       echo "${{ inputs.portfolio }}"
+#       echo "${{ inputs.start_date }}"
+#       echo ${{ inputs.end_date }}
+#       echo ${{ inputs.change_description }}
+#       echo ${{ inputs.change_category }}
+#     shell: bash
     
   - name: Validate Start date
     uses: actions-ecosystem/action-regex-match@v2
@@ -134,7 +134,7 @@ runs:
   - name: Get Product Category details 
     id: bmcremedyprodcat
     run: |
-      echo "prodcut name" "${{ env.PROD_NAME_WITHOUT_SPACE }}"
+      echo "product name" "${{ env.PROD_NAME_WITHOUT_SPACE }}"
       curl -X GET "https://mnscorp-rod-qa-restapi.onbmc.com/api/arsys/v1/entry/PCT:Product%20Catalog?q=('Status'=\"Enabled\"%20AND%20'Product%20Name'%20=\"${{ env.PROD_NAME_WITHOUT_SPACE }}\")&fields=values(Product%20Categorization%20Tier%201,Product%20Categorization%20Tier%202,Product%20Categorization%20Tier%203,Product%20Name,Manufacturer)" \
       -H "Authorization: AR-JWT ${{ env.TOKEN }}" \
       -H "Content-Type: application/json" > $HOME/response.json
