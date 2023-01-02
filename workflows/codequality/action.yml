@@ -83,7 +83,7 @@ runs:
       
     - name: SonarCloud Scan run for Generic projects
       if: ${{ ( ( inputs.build_tool != 'maven') && (inputs.build_tool != 'mvn') && ( inputs.build_tool != 'gradle') && ( inputs.build_tool != 'gradlew') ) }}
-      uses: SonarSource/sonarcloud-github-action@v1.8
+      uses: SonarSource/sonarcloud-github-action@master
       env:
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ inputs.cq_token }}
