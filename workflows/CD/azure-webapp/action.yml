@@ -48,7 +48,7 @@ runs:
       
     - name: 'Deploy to Azure WebApp using Profile and Source'
       if: ${{ inputs.azure_profile != '' }}
-      uses: azure/webapps-deploy@v2.2.5
+      uses: azure/webapps-deploy@v2
       with: 
         app-name: ${{inputs.webapp_name}}
         publish-profile: ${{ inputs.azure_profile }}
@@ -62,7 +62,7 @@ runs:
 #       shell: bash
 #     - name: 'Deploy to Azure WebApp using Profile and Container'
 #       if: ${{ inputs.azure_profile != '' && ( inputs.image_name != '' && inputs.source_path == '') }}
-#       uses: azure/webapps-deploy@v2.2.5
+#       uses: azure/webapps-deploy@v2
 #       with: 
 #         app-name: ${{inputs.webapp_name}}
 #         publish-profile: ${{ inputs.azure_profile }}
@@ -79,7 +79,7 @@ runs:
         creds: '{"clientId": "${{ inputs.azure_client_id }}", "clientSecret": "${{ inputs.azure_client_secret }}", "subscriptionId": "${{ inputs.subscription }}", "tenantId": "${{ inputs.azure_tenant_id }}"}'
       if:  ${{ inputs.azure_profile == '' }}
       
-    - uses: azure/webapps-deploy@v2.2.5
+    - uses: azure/webapps-deploy@v2
       with:
         app-name: ${{inputs.webapp_name}}
         image: ${{inputs.image_name}}:${{inputs.image_tag}}
