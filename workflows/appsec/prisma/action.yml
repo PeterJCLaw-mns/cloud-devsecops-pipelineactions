@@ -33,7 +33,7 @@ runs:
       
     - name: Login to Registry Server 
       if: ${{ inputs.registry_server && ( !contains(inputs.registry_server, 'local') && !contains(inputs.registry_server,'docker.io') ) }}
-      uses: Azure/docker-login@v1
+      uses: Azure/docker-login@v1.0.1
       with:
         username: ${{inputs.registry_username}}
         password: ${{inputs.registry_password}}

@@ -71,7 +71,7 @@ runs:
     shell: bash
     
   - name: Install JAVA 
-    uses: actions/setup-java@v2
+    uses: actions/setup-java@v3.9.0
     if: ${{inputs.jdk_version}}
     with:
       distribution: 'adopt' # See 'Supported distributions' for available options
@@ -79,7 +79,7 @@ runs:
    
   - name: Install Node
     if: ${{inputs.node_version}}
-    uses: actions/setup-node@v3
+    uses: actions/setup-node@v3.5.1
     with:
       node-version: ${{inputs.node_version}}
       

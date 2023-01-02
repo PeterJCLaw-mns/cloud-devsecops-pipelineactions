@@ -79,7 +79,7 @@ jobs:
              pull_branch=$(jq --raw-output .pull_request.head.ref "$GITHUB_EVENT_PATH")
              echo "Pull request Branch: $pull_branch"
              echo "::set-output name=pull_branch::$pull_branch"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3.2.0
         with:
           ref: ${{ steps.pull.outputs.pull_branch}}
       - run: |
@@ -134,7 +134,7 @@ jobs:
     needs: Pre-Work
     steps:
     - name: ============ Checkout the repository Code ==========
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3.2.0.2.0
       with:
         repository: DigitalInnovation/Cloud-DevSecOps-Pipeline-Node
         token: ${{ secrets.SAML_GITHUB_TOKEN }}
@@ -200,7 +200,7 @@ jobs:
     continue-on-error: true
     steps:
     - name: ============ Checkout the repository Code ========== same as git-repo (get)
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3.2.0.2.0
       with:
         repository: DigitalInnovation/Cloud-DevSecOps-Pipeline-Node
         token: ${{ secrets.SAML_GITHUB_TOKEN }}
@@ -229,7 +229,7 @@ jobs:
     needs: [Pre-Work, Build_Test_and_Publish_Package]
     steps:
     - name: ============ Checkout the repository Code ========== same as git-repo (get)
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3.2.0.2.0
       with:
         repository: DigitalInnovation/Cloud-DevSecOps-Pipeline-Node
         token: ${{ secrets.SAML_GITHUB_TOKEN }}
@@ -263,7 +263,7 @@ jobs:
     environment: Non-prod
     needs: [Pre-Work, Build_Push_Container_image ]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3.2.0
       with:
           repository: DigitalInnovation/Cloud-DevSecOps-Pipeline-Node
           token: ${{ secrets.SAML_GITHUB_TOKEN }}
@@ -327,7 +327,7 @@ jobs:
     needs: [Pre-Work, Build_Push_Container_image]  # needs pre-work if you are referencing the output
     environment: Non-prod
     steps:  
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3.2.0.2.0
       with:
         repository: DigitalInnovation/Cloud-DevSecOps-Pipeline-Node
         token: ${{ secrets.SAML_GITHUB_TOKEN }}
