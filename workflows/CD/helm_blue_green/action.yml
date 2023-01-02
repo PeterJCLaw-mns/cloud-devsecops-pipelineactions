@@ -53,7 +53,7 @@ runs:
   using: "composite"
   steps:
     - name: Install JAVA 11
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v3.9.0
       with:
         distribution: 'adopt' # See 'Supported distributions' for available options
         java-version: '11'  
@@ -101,7 +101,7 @@ runs:
       if: ${{ inputs.helm_version == '2' }}
       
     - name: k8s-set-context
-      uses: Azure/k8s-set-context@v1
+      uses: Azure/k8s-set-context@v3.0
       with:
         kubeconfig: ${{ inputs.kube_config }}     
 

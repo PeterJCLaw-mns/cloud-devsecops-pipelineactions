@@ -15,7 +15,7 @@ jobs:
       old_version: ${{ steps.semantic_version.outputs.old_version }}
       commit_msg: ${{ steps.semantic_version.outputs.commit_msg }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3.2.0
       with:
         fetch-depth: 0
     - name: Installing Dependencies
@@ -64,7 +64,7 @@ jobs:
     name: Replacing new version in files
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3.2.0
       with:
         fetch-depth: 0
     - name: Replacing new version in files
@@ -97,7 +97,7 @@ jobs:
       new_version_with_commit: ${{ steps.tag.outputs.new_version_with_commit }}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3.2.0
       with:
         #fetch-depth: 0
         ref: main
@@ -152,7 +152,7 @@ jobs:
     name: Creating Release
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3.2.0
       with:
         fetch-depth: 0
     - name: Creating Release

@@ -38,14 +38,14 @@ runs:
       #- uses: actions/checkout@v2 "removing as this does not work for cicdhopper"
           
       - name: Setup NodeJs with artifact registry
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3.5.1
         with:
           node-version: ${{ inputs.node_version }}
           registry-url: ${{inputs.artifact_repository_url}}
         if: ${{ inputs.artifact_repository_url }}
         
       - name: Setup NodeJs 
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3.5.1
         with:
           node-version: ${{ inputs.node_version }}
       

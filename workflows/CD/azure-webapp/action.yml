@@ -74,7 +74,7 @@ runs:
       shell: bash
       
     - name: 'Deploy to Azure Webapp using Service Principal - by login to Azure'
-      uses: azure/login@v1
+      uses: azure/login@v1.4.6
       with:
         creds: '{"clientId": "${{ inputs.azure_client_id }}", "clientSecret": "${{ inputs.azure_client_secret }}", "subscriptionId": "${{ inputs.subscription }}", "tenantId": "${{ inputs.azure_tenant_id }}"}'
       if:  ${{ inputs.azure_profile == '' }}

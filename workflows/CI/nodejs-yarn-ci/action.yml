@@ -55,9 +55,9 @@ runs:
       shell: bash
 #     - name: Checkout
 #       uses: actions/checkout@v2
-    - uses: c-hive/gha-yarn-cache@v2.1.0
+    - uses: c-hive/gha-yarn-cache@v2
     - name: Setup NodeJs
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3.5.1
       with:
         node-version: ${{ inputs.build_tool_version }}
     - name: Install JS dependencies
@@ -112,7 +112,7 @@ runs:
     - name: Zip Web App package
       run: zip -r "./${{ inputs.application_name }}.zip" . --exclude @.zipignore --exclude .zipignore
       shell: bash
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3.1.1
       with:
         name: build-artifact-${{ github.sha }}
         path: |
