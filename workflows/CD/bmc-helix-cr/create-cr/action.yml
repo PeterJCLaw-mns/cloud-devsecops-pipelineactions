@@ -189,7 +189,7 @@ runs:
       echo "Success ! CR is raised in BMC Remedy"
       
      else
-      echo "::error :: CR is not created in BMC Remedy, need to check the workflow"
+      echo "::error :: CR is not created in BMC Remedy, Please check the error message returned for more information."
       exit 1
      fi
     shell: bash       
