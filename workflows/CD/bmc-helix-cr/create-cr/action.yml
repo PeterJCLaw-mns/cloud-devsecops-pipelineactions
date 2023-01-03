@@ -187,9 +187,10 @@ runs:
      if [[ ${{ steps.requestbmc.outputs.response }}  == *"change_id":"CRQ"* ]]
      then
       echo "Success ! CR is raised in BMC Remedy"
-      exit 1
+      
      else
-      echo "CR is not created in BMC Remedy, need to check the workflow"
+      echo "::error :: CR is not created in BMC Remedy, need to check the workflow"
+      exit 1
      fi
     shell: bash       
        
