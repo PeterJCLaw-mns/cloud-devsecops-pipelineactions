@@ -175,7 +175,7 @@ runs:
             "Product Cat Tier 3 (2)": "${{ env.PROD_CAT3 }}",
             "Product Name (2)": "${{ inputs.app_name }}",
             "Manufacturer (2)": "${{ env.PROD_MAN }}",
-            "Detailed Description": "${{ inputs.change_description }} ${{ github.event.inputs.business_impact }} Repo_Name:${{ github.event.repository.name }};" ,
+            "Detailed Description": "Repo_Name:${{ github.event.repository.name }};\n${{ inputs.change_description }} Business_Impact-${{ github.event.inputs.business_impact }}" ,
             "Change Category*": "${{ inputs.change_category }}",
             "TemplateID": "${{inputs.template_id}}" 
         }
