@@ -1,4 +1,3 @@
-# push_image.yml
 name: 'Get Secrets from Azure key Vault'
 description: 'Get Secrets from Azure key Vault'
 inputs:
@@ -15,27 +14,30 @@ inputs:
     required: true
   secret_keys:
     required: false
-    
+
+
 runs:
   using: "composite"
   steps:
     - run: ls -lart
       shell: bash
-    - run : echo $RUNNER_NAME $RUNNER_OS $RUNNER_ARCH $RUNNER_TEMP
+
+    - run : echo test $RUNNER_NAME $RUNNER_OS $RUNNER_ARCH $RUNNER_TEMP
       shell: bash
+
+    - uses: azure/CLI@v1
+      id: GetAKVSecrets
+      with:  
+        azcliversion: 2.30.0
+        inlineScript: |
+            az login --service-principal -u ${{ inputs.sp_client_id }} -p ${{ inputs.sp_client_secret }} --tenant ${{ inputs.tenent_id }}
+            az account set --subscription '${{ inputs.subscription_id }}'
+            IFS=, read -ra values <<< "${{inputs.secret_keys}}"
+            for v in "${values[@]}"
+            do
+              keyValue=$(az keyvault secret show --name "$v" --vault-name "${{inputs.keyvault}}" --query "value" -o tsv)
+              echo "::add-mask::${keyValue}"
+              echo "${v}=${keyValue}" >> $GITHUB_ENV
+            done
       
-        
-########### Login and Push image to Azure Container Registry ##############
-
-    - name: 'login to Azure'
-      if: ${{ contains(runner.name, 'selfhosted') }}
-      uses: azure/login@v1.4.6
-      with:
-        creds: '{"clientId": "${{ inputs.sp_client_id }}", "clientSecret": "${{ inputs.sp_client_secret }}", "subscriptionId": "${{ inputs.subscription_id }}", "tenantId": "${{ inputs.tenent_id }}"}'
-
-########### Get info from key vault ##############            
-    - uses: Azure/get-keyvault-secrets@v1
-      id: getakvsecrets
-      with:
-        keyvault: ${{inputs.keyvault}} # name of key vault in Azure portal
-        secrets: ${{inputs.secret_keys}} # comma separated list of secret keys to fetch from key vault 
+   
