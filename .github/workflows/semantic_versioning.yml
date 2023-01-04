@@ -1,7 +1,5 @@
 name: Create Tag and release
-on:
-  workflow_dispatch:
-  
+on:  
   push:
     branches:
       - main
@@ -76,13 +74,12 @@ jobs:
         new_tag=${{needs.Defining_Semantic_Version.outputs.new_version}}
         echo "New Tag:$new_tag"
         echo "***************Printing $tag1 mentioned places****************"
-        grep -rn "@$tag1" *  
+        grep -rn "@$tag1" * | grep -E "DigitalInnovation"  
         echo "******************Replacing $tag1 with $new_tag in all action.yml files*******************"
-        find ./workflows/ -type f -exec sed -i -e "s|@$tag1|@$new_tag|g" {} \;
-        #find ./workflows/ -type f -exec sed -i -e "s|@latest|@$new_tag|g" {} \;
+        find ./workflows/ -type f -exec sed -i -e "/DigitalInnovation/s/@$tag1/@$new_tag/" {} \;
         echo "Replacing $tag1 with $new_tag in all action.yml files"
         echo "******************After replacing new version, Printing $new_tag mentioned places**************************"
-        grep -rn "@$new_tag" *
+        grep -rn "@$new_tag" * | grep -E "DigitalInnovation"
         echo "*********************Pushing changes into the main branch***********************"
         git config --global user.name 'Y9886988'
         git config --global user.email 'Y9886988@mnscorp.onmicrosoft.com'
