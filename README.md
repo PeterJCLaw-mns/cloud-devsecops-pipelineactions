@@ -46,8 +46,19 @@ As part of the journey towards Continuous Deployment, we have created Automated 
        - remedyautocr
 ```
 
-**Step 4**: Run the workflow which you have committed in Step 2 but providing the below input values as per your Product,
-
+**Step 4**: Run the workflow which you have committed in Step 2 by providing the below input values as per your Product,
+| S.No | Workflow dispatch inputs | Remarks | Example | Mandatory / Optional | 
+| ------------- | ------------------------------------------- | ----------------------------- | --------------|---------------------- |
+| 1 | Change Initiated Portfolio | Input your Portfolio name | Foods | mandatory | 
+| 2 | Change Implementation Start Date (YYYY-MM-DDTHH:MM:SS).Provide future date | Input your Scheduled start date in the format, YYYY-MM-DDTHH:MM:SS and also provide future date | 2023-01-28T05:00:00 | mandatory | 
+| 3 | Change Implementation End Date (YYYY-MM-DDTHH:MM:SS).Provide future date | Input your Scheduled end date in the format, YYYY-MM-DDTHH:MM:SS and also provide future date and value greater than start date | 2023-01-28T08:00:00 | mandatory | 
+| 4 | Application Name | Input your Application name | Transport Management System (TMS) | mandatory | 
+| 5 | Change Description | Input your Change description | Sample: This change is about the enabling logging in the application | mandatory | 
+| 6 | Change Category | Input your Change Category | Application | mandatory | 
+| 7 | Outage Required? | Input if your change requires outage | Yes/No | mandatory | 
+| 8 | Product 4 Wall Change? | Input if your change is Product 4 wall change | Yes | mandatory | 
+| 9 | Business Impact | Provide your Business Impact | Sample: Test Business Impact | mandatory | 
+| 10 | For Risk and Impact assessment agreement, please refer this link - | Please go through the R&I assessment and agree | Yes | mandatory | 
 
 
 ## Insights 
