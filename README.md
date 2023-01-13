@@ -19,11 +19,37 @@ The following reusable actions are available for a variety of tech stacks, pleas
 - Artifact and Image Publishing (If required separately from CI)
 - Code Quality (If required separately from CI)
 - Deployment 
+  - Automated Change Management 
   - AKS Helm Deployment
 - Observability 
   - New Relic Deployment Marker
   - Pipeline Insights 
   
+## Automated Change Management
+As part of the journey towards Continuous Deployment, we have created Automated CR (Change Request) composite actions using which you will be able to create CR, check conflicts through pipeline itself rather than manually raising the CR in BMC Remedy. 
+
+**Tools involved**: BMC Helix iPaaS, BMC Remedy
+
+### **How to Consume**:
+
+**Step 1**: Go to the New worklfow section in your repo (https://github.com/DigitalInnovation/{{your-repo-name}}/actions/new), as shown below and select 'M&S - Automated CR workflow' workflow in order to get your automated CR workflow which performs,
+ - Display Conflict details based on your Scheduled start and end date
+ - Create CR and return the CR number created in BMC Remedy based on your input selection 
+![image](https://user-images.githubusercontent.com/19665606/212329039-af681422-2d95-4143-b203-21c42410ab8e.png)
+
+**Step 2**: Commit the workflow file in your repository
+
+**Step 3**: Include the below trigger condition in your 'Release to Prod' workflow, 
+```
+  repository_dispatch:
+     types:
+       - remedyautocr
+```
+
+**Step 4**: Run the workflow which you have committed in Step 2 but providing the below input values as per your Product,
+
+
+
 ## Insights 
 The insights workflow sends the pipeline run metrics to New Relic events db based on the New Relic Account ID and API Key provided as secrets.
   
