@@ -60,6 +60,9 @@ As part of the journey towards Continuous Deployment, we have created Automated 
 | 9 | Business Impact | Provide your Business Impact | Sample: Test Business Impact | mandatory | 
 | 10 | For Risk and Impact assessment agreement, please refer this link - | Please go through the R&I assessment and agree | Yes | mandatory | 
 
+Please refer below high level overview on Automated CR for Phase 1 - 4 wall change without outage (with approval),
+![Automated CR - Phase 1](https://user-images.githubusercontent.com/19665606/212680805-bcebf6ed-437d-46e5-be55-1b2cb5a3795e.jpg)
+
 
 ## Insights 
 The insights workflow sends the pipeline run metrics to New Relic events db based on the New Relic Account ID and API Key provided as secrets.
