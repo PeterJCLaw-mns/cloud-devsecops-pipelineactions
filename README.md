@@ -63,6 +63,9 @@ As part of the journey towards Continuous Deployment, we have created Automated 
 Please refer below high level overview on Automated CR for Phase 1 - 4 wall change without outage (with approval),
 ![Automated CR - Phase 1](https://user-images.githubusercontent.com/19665606/212680805-bcebf6ed-437d-46e5-be55-1b2cb5a3795e.jpg)
 
+Reference workflows for this Automated CR, <br>
+Create CR - https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/cloud9-devsecops-automated-cr-workflow.yml <br>
+Update CR - https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/bmc_update_cr_comp_actions.yml
 
 ## Insights 
 The insights workflow sends the pipeline run metrics to New Relic events db based on the New Relic Account ID and API Key provided as secrets.
@@ -81,7 +84,7 @@ The insights workflow sends the pipeline run metrics to New Relic events db base
      - `**pipelinemetricsdb** -> Contains the details about the workflow`
      - `**pipelinejobmetricsdb** -> Contains the details about the Jobs in each workflow`
       
-   - You can duplicate the below Demo Dashbaord to view the metrics.
+   - You can duplicate the below Demo Dashboard to view the metrics.
     https://onenr.io/0bRK984bEQE
 
    - Or you can use the below sample queries to view in New Relic Dashboard (Custom queries can be created based on the data) 
