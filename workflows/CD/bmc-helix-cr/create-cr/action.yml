@@ -158,6 +158,7 @@ runs:
       echo "INPUT_PARAMS=$(echo {{ inputs.change_description }} | cut -d ";" -f 2)" >> $GITHUB_ENV
       echo "${{ env.DESC }}"
       echo "${{ env.INPUT_PARAMS }}"
+    shell: bash  
     
   - name: Conflict check and create CR
     id: requestbmc
