@@ -147,8 +147,8 @@ runs:
     
   - name: Format Detailed description to place in Notes field
     run: |
-      echo "DESC=$(echo "{{ inputs.change_description }}" | cut -d ";" -f 1)" >> $GITHUB_ENV
-      echo "INPUT_PARAMS=$(echo "{{ inputs.change_description }}" | cut -d ";" -f 2)" >> $GITHUB_ENV
+      echo "DESC=$(echo "${{ inputs.change_description }}" | cut -d ";" -f 1)" >> $GITHUB_ENV
+      echo "INPUT_PARAMS=$(echo "${{ inputs.change_description }}" | cut -d ";" -f 2)" >> $GITHUB_ENV
     shell: bash  
     
   - name: Show all env variables    
