@@ -144,21 +144,22 @@ runs:
       echo "PROD_MAN=$(jq -r '.entries[0].values["Manufacturer"]' $HOME/response.json)" >> $GITHUB_ENV
     shell: bash
     
-  - name: Show Product category outpus    
-    run: |
-       echo "${{ env.PROD_CAT1 }}"
-       echo "${{ env.PROD_CAT2 }}"
-       echo "${{ env.PROD_CAT3 }}"
-       echo "${{ env.PROD_MAN }}"
-    shell: bash
     
   - name: Format Detailed description to place in Notes field
     run: |
       echo "DESC=$(echo {{ inputs.change_description }} | cut -d ";" -f 1)" >> $GITHUB_ENV
       echo "INPUT_PARAMS=$(echo {{ inputs.change_description }} | cut -d ";" -f 2)" >> $GITHUB_ENV
-      echo "${{ env.DESC }}"
-      echo "${{ env.INPUT_PARAMS }}"
     shell: bash  
+    
+  - name: Show all env variables    
+    run: |
+       echo "${{ env.PROD_CAT1 }}"
+       echo "${{ env.PROD_CAT2 }}"
+       echo "${{ env.PROD_CAT3 }}"
+       echo "${{ env.PROD_MAN }}"
+       echo "${{ env.DESC }}"
+      echo "${{ env.INPUT_PARAMS }}"
+    shell: bash    
     
   - name: Conflict check and create CR
     id: requestbmc
