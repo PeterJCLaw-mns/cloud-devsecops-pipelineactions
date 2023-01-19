@@ -184,7 +184,7 @@ runs:
             "Product Cat Tier 3 (2)": "${{ env.PROD_CAT3 }}",
             "Product Name (2)": "${{ inputs.app_name }}",
             "Manufacturer (2)": "${{ env.PROD_MAN }}",
-            "Detailed Description": "Repo_Name:${{ github.event.repository.name }};\nInput_Fields:\necho "${{ env.INPUT_PARAMS }}"\nNotes:"${{ env.DESC }}"\nBusiness_Impact:${{ github.event.inputs.business_impact }}" ,
+            "Detailed Description": "Repo_Name:${{ github.event.repository.name }};\nInput_Fields:\n${{ env.INPUT_PARAMS }}\nNotes:${{ env.DESC }}\nBusiness_Impact:${{ github.event.inputs.business_impact }}" ,
             "Change Category*": "${{ inputs.change_category }}",
             "TemplateID": "${{inputs.template_id}}" 
         }
