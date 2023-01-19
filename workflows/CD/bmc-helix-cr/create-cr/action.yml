@@ -158,7 +158,7 @@ runs:
        echo "${{ env.PROD_CAT3 }}"
        echo "${{ env.PROD_MAN }}"
        echo "${{ env.DESC }}"
-      echo "${{ env.INPUT_PARAMS }}"
+       echo "${{ env.INPUT_PARAMS }}"
     shell: bash    
     
   - name: Conflict check and create CR
