@@ -43,9 +43,9 @@ As part of the journey towards Continuous Deployment, we have created Automated 
      types:
        - remedyautocr
 ```
-**Step 3**: Include the below code snippets before and after the Production deployment step in order to update the CR as 'Implementation in progress' and 'Completed' respectively so that CR will be updated properly after the Prodution deploymet is completed,
+**Step 3**: Include the below code snippets in your 'Release to Production' workflow, before and after the Production deployment step in order to update the CR as 'Implementation in progress' and 'Completed' respectively, so that CR status will be updated properly after the Prodution deploymet is completed,
 
-Snippet to be added before Production deployment step:
+Snippet to be added **before** Production deployment step:
 
 ```
       uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr@branch-bmc-helix-action
@@ -59,7 +59,7 @@ Snippet to be added before Production deployment step:
         update_status: "Implementation In Progress"
         update_reason: ""
 ```
-Snippet to be added after Production deployment step:
+Snippet to be added **after** Production deployment step:
 
 ```
       uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr@branch-bmc-helix-action
