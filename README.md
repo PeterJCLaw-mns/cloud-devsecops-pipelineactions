@@ -25,25 +25,53 @@ The following reusable actions are available for a variety of tech stacks, pleas
   - New Relic Deployment Marker
   - Pipeline Insights 
   
-## Automated Change Management
+### Automated Change Management
 As part of the journey towards Continuous Deployment, we have created Automated CR (Change Request) composite actions using which you will be able to create CR, check conflicts through pipeline itself rather than manually raising the CR in BMC Remedy. 
 
 **Tools involved**: BMC Helix iPaaS, BMC Remedy
 
-### **How to Consume**:
+#### **How to Consume**:
 
-**Step 1**: Go to the New worklfow section in your repo (https://github.com/DigitalInnovation/{{your-repo-name}}/actions/new), as shown below and select 'M&S - Automated CR workflow' workflow in order to get your automated CR workflow which performs,
+**Step 1**: Go to the New worklfow section in your repo (https://github.com/DigitalInnovation/{{your-repo-name}}/actions/new), as shown below and select 'M&S - Automated CR workflow' workflow in order to get your automated CR workflow which performs below and commit the workflow file in your repository,
  - Display Conflict details based on your Scheduled start and end date
  - Create CR and return the CR number created in BMC Remedy based on your input selection 
 ![image](https://user-images.githubusercontent.com/19665606/212329039-af681422-2d95-4143-b203-21c42410ab8e.png)
 
-**Step 2**: Commit the workflow file in your repository
-
-**Step 3**: Include the below trigger condition in your 'Release to Prod' workflow, 
+**Step 2**: Include the below trigger condition in your 'Release to Prod' workflow, 
 ```
   repository_dispatch:
      types:
        - remedyautocr
+```
+**Step 3**: Include the below code snippets before and after the Production deployment step in order to update the CR as 'Implementation in progress' and 'Completed' respectively so that CR will be updated properly after the Prodution deploymet is completed,
+
+Snippet to be added before Production deployment step:
+
+```
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr@branch-bmc-helix-action
+      with:
+        action: "update"
+        bmc_username: GitHub.APIUser
+        bmc_password: ${{ secrets.BMC_REMEDY_API_PASSWORD  }}
+        helix_username: github
+        helix_password: ${{ secrets.BMC_HELIX_API_PASSWORD  }}
+        change_request_id: ${{ github.event.client_payload.change_request_id }}
+        update_status: "Implementation In Progress"
+        update_reason: ""
+```
+Snippet to be added after Production deployment step:
+
+```
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr@branch-bmc-helix-action
+      with:
+        action: "update"
+        bmc_username: GitHub.APIUser
+        bmc_password: ${{ secrets.BMC_REMEDY_API_PASSWORD  }}
+        helix_username: github
+        helix_password: ${{ secrets.BMC_HELIX_API_PASSWORD  }}
+        change_request_id: ${{ github.event.client_payload.change_request_id }}
+        update_status: "Completed"
+        update_reason: "Final Review Complete"
 ```
 
 **Step 4**: Run the workflow which you have committed in Step 2 by providing the below input values as per your Product,
@@ -67,7 +95,7 @@ Reference workflows for this Automated CR, <br>
 Create CR - https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/cloud9-devsecops-automated-cr-workflow.yml <br>
 Update CR - https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/bmc_update_cr_comp_actions.yml
 
-### **Change Management Risk/Impact Assessment Questionnaire**
+#### **Change Management Risk/Impact Assessment Questionnaire**
  - [ ] The preferred Change window for the change execution is correct and a safe time (non-business/ trading hours wherever possible and not to conflict with business events) to do this change with zero-downtime deployment
 - [ ] Change roll back plan is available and tested to ensure changes can be reverted quickly to avoid impacts within the agreed change window
 - [ ] Pre-Implementation steps including the necessary pre requites for the change implementation are validated before execution
@@ -77,7 +105,7 @@ Update CR - https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/
 - [ ] If the change is impacting M&S Security, approval from the infosec need to be secured to proceed with the change
 - [ ] If the change is impacting the DR Capability of the service, ensure the relevant changes are reflecting in the DR component as well.
 
-## Insights 
+### Insights 
 The insights workflow sends the pipeline run metrics to New Relic events db based on the New Relic Account ID and API Key provided as secrets.
   
   **How to Consume**
