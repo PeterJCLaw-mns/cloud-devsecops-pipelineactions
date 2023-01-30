@@ -69,21 +69,21 @@ runs:
         echo "${{ env.CR_STATUS }}"
     shell: bash      
 
-    - name: Update CR for Implementation in Progress
-      uses: fjogeleit/http-request-action@master
-      with:
-        url: 'https://mnscorp.jitterbit.eu/mnscorp-dev-ca/gitHubAutoCr/updatecr'        
-        method: 'POST'
-        timeout: 80000
-        username: ${{inputs.helix_username}}
-        password: ${{ inputs.helix_password }}
-        #All dates passed here will be dynamically parameterized, hence no need to get it from the Engineers
-        data: >-
-          {
-            "change_request_id": "${{ inputs.change_request_id }}",
-            "status": "${{ inputs.update_status }}",
-            "status_reason": "${{ inputs.update_reason }}"
-          }
+  - name: Update CR for Implementation in Progress
+    uses: fjogeleit/http-request-action@master
+    with:
+      url: 'https://mnscorp.jitterbit.eu/mnscorp-dev-ca/gitHubAutoCr/updatecr'        
+      method: 'POST'
+      timeout: 80000
+      username: ${{inputs.helix_username}}
+      password: ${{ inputs.helix_password }}
+      #All dates passed here will be dynamically parameterized, hence no need to get it from the Engineers
+      data: >-
+        {
+          "change_request_id": "${{ inputs.change_request_id }}",
+          "status": "${{ inputs.update_status }}",
+          "status_reason": "${{ inputs.update_reason }}"
+        }
 
 
      
