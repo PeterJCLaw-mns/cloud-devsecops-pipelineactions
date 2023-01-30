@@ -25,7 +25,7 @@ runs:
       SNYK_TOKEN: ${{inputs.dependency_scan_token}}
       
   - name: Snyk Continuous Monitor
-    run: snyk monitor || echo "snyk monitor enabling completed"
+    run: snyk monitor ${{inputs.dependency_scan_arguments}} || echo "snyk monitor enabling completed"
     shell: bash
     env:
       SNYK_TOKEN: ${{inputs.dependency_scan_token}}
