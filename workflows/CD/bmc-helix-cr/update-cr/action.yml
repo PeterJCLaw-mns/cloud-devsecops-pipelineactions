@@ -2,40 +2,6 @@ ame: 'BMC Helix Integration & CR creation'
 description: 'Deployment using helm charts'
 
 inputs:
-#   portfolio:
-#     required: true
-#   start_date:
-#     description: 'Change Implementation Start Date (YYYY-MM-DDTHH:MM:SS)'
-#     required: true
-#   end_date:
-#     description: 'Change Implementation End Date (YYYY-MM-DDTHH:MM:SS)'
-#     required: true
-#   app_name:
-#     description: 'Application Name'
-#     required: true
-#   change_description:
-#     description: 'Change Description'
-#     required: true
-#   change_category:
-#     description: 'Change Category'
-#     required: true
-#   outage_required:
-#     description: 'Outage Required?'
-#     required: true
-#   product_four_wall:
-#     description: 'Product 4 Wall Change?'
-#     required: true
-#   business_impact:
-#     description: 'Business Impact'
-#     required: true
-#   risk_impact:
-#     description: 'Risk and Impact assessment agreement'
-#     required: true
-
-#   bmc_username:
-#     required: true
-#   bmc_password:
-#     required: true
 
   helix_username:
     required: true
@@ -73,6 +39,35 @@ runs:
 #       run: |
 #          echo "TOKEN=${{ steps.bmcremedylogin.outputs.response }}" >> $GITHUB_ENV
 #       shell: bash
+
+  - name: Get BMC Remedy API token
+    id: bmcremedylogin
+    uses: fjogeleit/http-request-action@master
+    with:
+      # url: 'https://mnscorp-rod-qa-restapi.onbmc.com/api/jwt/login'    
+      url: "${{inputs.remedy_url}}/api/jwt/login"
+      method: 'POST'
+      contentType: application/x-www-form-urlencoded     
+      data: '{"username": "${{inputs.bmc_username}}", "password": "${{ inputs.bmc_password }}"}'
+      
+  - name: Assign API response
+    run: |
+       echo "TOKEN=${{ steps.bmcremedylogin.outputs.response }}" >> $GITHUB_ENV
+    shell: bash   
+    
+  - name: Get CR status 
+    id: bmcremedycrstatus
+    run: |
+      curl -X GET "https://mnscorp-rod-qa-restapi.onbmc.com/api/arsys/v1/entry/CHG:ChangeInterface?q='Infrastructure%20Change%20ID'="${{ inputs.change_request_id }}"&fields=values(Change%20Request%20Status)" \
+      -H "Authorization: AR-JWT ${{ env.TOKEN }}" \
+      -H "Content-Type: application/json" > $HOME/response.json
+      echo "CR_STATUS=$(jq -r '.entries[0].values["Change Request Status"]' $HOME/response.json)" >> $GITHUB_ENV
+    shell: bash    
+    
+  - name: Print CR status
+    run: |
+        echo "${{ env.CR_STATUS }}"
+    shell: bash      
 
     - name: Update CR for Implementation in Progress
       uses: fjogeleit/http-request-action@master
