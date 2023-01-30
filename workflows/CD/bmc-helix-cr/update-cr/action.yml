@@ -70,7 +70,7 @@ runs:
         if [[ ${{ env.CR_STATUS }} == "Scheduled" ]]
           then
               echo "Proceed with the deployment"
-        elif [[ ${{ env.CR_STATUS }} != "Completed" ]]
+        elif [[ ${{ env.CR_STATUS }} == "Completed" ]]
           then
               echo "Proceed with the deployment, provided if it is a combined CR otherwise raise a new CR"
         else
