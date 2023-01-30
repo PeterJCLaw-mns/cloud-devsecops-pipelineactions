@@ -61,13 +61,22 @@ runs:
       curl -X GET "https://mnscorp-rod-qa-restapi.onbmc.com/api/arsys/v1/entry/CHG:ChangeInterface?q='Infrastructure%20Change%20ID'=\"${{ inputs.change_request_id }}\"&fields=values(Change%20Request%20Status)" \
       -H "Authorization: AR-JWT ${{ env.TOKEN }}" \
       -H "Content-Type: application/json" > $HOME/response.json
-      cat $HOME/response.json
       echo "CR_STATUS=$(jq -r '.entries[0].values["Change Request Status"]' $HOME/response.json)" >> $GITHUB_ENV
     shell: bash    
     
-  - name: Print CR status
+  - name: Validate CR status
     run: |
         echo "${{ env.CR_STATUS }}"
+        if [[ ${{ env.CR_STATUS }} == "Scheduled" ]]
+          then
+              echo "Proceed with the deployment"
+        elif [[ ${{ env.CR_STATUS }} != "Completed" ]]
+          then
+              echo "Proceed with the deployment, provided if it is a combined CR otherwise raise a new CR"
+        else
+              echo "Please get the CR approval before deploying to Production"
+              exit 1
+          fi
     shell: bash      
 
   - name: Update CR for Implementation in Progress
