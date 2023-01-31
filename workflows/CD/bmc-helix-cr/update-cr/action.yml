@@ -73,6 +73,9 @@ runs:
         elif [[ "${{ env.CR_STATUS }}" == "Completed" ]]
           then
               echo "Proceed with the deployment, provided if it is a combined CR otherwise raise a new CR"
+        elif [[ "${{ env.CR_STATUS }}" == "Implementation In Progress" ]]
+          then
+              echo "Looks like you have already attemped for a deployment, Proceed with caution!!"              
         else
               echo "Please get the CR approval before deploying to Production"
               exit 1
