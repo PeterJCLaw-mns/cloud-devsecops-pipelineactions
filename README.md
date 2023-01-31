@@ -37,11 +37,12 @@ As part of the journey towards Continuous Deployment, we have created Automated 
  - Create CR and return the CR number created in BMC Remedy based on your input selection 
 ![image](https://user-images.githubusercontent.com/19665606/212329039-af681422-2d95-4143-b203-21c42410ab8e.png)
 
-**Step 2**: Include the below trigger condition in your 'Release to Prod' workflow, 
+**Step 2**: Include the below input parameter in your 'Release to Prod' workflow, (CR number will be available in the Step 1 workflow output whne you execute it)
 ```
-  repository_dispatch:
-     types:
-       - remedyautocr
+     change_request_id:
+       description: 'Provide the CR number for update workflow'
+       required: true
+       type: string
 ```
 **Step 3**: Include the below code snippets in your 'Release to Production' workflow, before and after the Production deployment step in order to update the CR as 'Implementation in progress' and 'Completed' respectively, so that CR status will be updated properly after the Prodution deploymet is completed,
 
@@ -55,7 +56,7 @@ Snippet to be added **before** Production deployment step:
         bmc_password: ${{ secrets.BMC_REMEDY_API_PASSWORD  }}
         helix_username: github
         helix_password: ${{ secrets.BMC_HELIX_API_PASSWORD  }}
-        change_request_id: ${{ github.event.client_payload.change_request_id }}
+        change_request_id: ${{ github.event.inputs.change_request_id }}
         update_status: "Implementation In Progress"
         update_reason: ""
 ```
@@ -69,7 +70,7 @@ Snippet to be added **after** Production deployment step:
         bmc_password: ${{ secrets.BMC_REMEDY_API_PASSWORD  }}
         helix_username: github
         helix_password: ${{ secrets.BMC_HELIX_API_PASSWORD  }}
-        change_request_id: ${{ github.event.client_payload.change_request_id }}
+        change_request_id: ${{ github.event.inputs.change_request_id }}
         update_status: "Completed"
         update_reason: "Final Review Complete"
 ```
@@ -89,7 +90,7 @@ Snippet to be added **after** Production deployment step:
 | 10 | For Risk and Impact assessment agreement, please refer this link - | Please go through the R&I assessment and agree | Yes | mandatory | 
 
 Please refer below high level overview on Automated CR for Phase 1 - 4 wall change without outage (with approval),
-![Automated CR - Phase 1](https://user-images.githubusercontent.com/19665606/212680805-bcebf6ed-437d-46e5-be55-1b2cb5a3795e.jpg)
+![Automated CR workflow](https://github.com/DigitalInnovation/cloud-devsecops-pipelineactions/blob/branch-bmc-helix-action/docs/Automated%20CR%20-%20phase%201%20updated.jpg)
 
 Reference workflows for this Automated CR, <br>
 Create CR - https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/cloud9-devsecops-automated-cr-workflow.yml <br>
