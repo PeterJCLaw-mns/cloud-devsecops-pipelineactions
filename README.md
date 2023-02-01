@@ -75,7 +75,7 @@ Snippet to be added **after** Production deployment step:
         update_reason: "Final Review Complete"
 ```
 
-**Step 4**: Run the workflow which you have committed in Step 2 by providing the below input values as per your Product,
+**Step 4**: Run the workflow which you have committed in Step 1 by providing the below input values as per your Product,
 | S.No | Workflow dispatch inputs | Remarks | Example | Mandatory / Optional | 
 | ------------- | ------------------------------------------- | ----------------------------- | --------------|---------------------- |
 | 1 | Change Initiated Portfolio | Input your Portfolio name | Foods | mandatory | 
