@@ -81,8 +81,8 @@ runs:
     - name: configure HELM V3
       run: |
          tar -zxvf /tmp/helm/helm-v3.2.0-linux-amd64.tar.gz --directory /tmp/helm \
-         && mv /tmp/helm/linux-amd64/helm /usr/local/bin/helm \
-         && rm -rf /tmp/helm/
+         && sudo mv /tmp/helm/linux-amd64/helm /usr/local/bin/helm \
+         && sudo rm -rf /tmp/helm/
       shell: bash
       if: ${{ inputs.helm_version == '3' }}
       
@@ -95,8 +95,8 @@ runs:
     - name: configure HELM V2
       run: |
          tar -zxvf /tmp/helm/helm-v2.8.2-linux-amd64.tar.gz --directory /tmp/helm \
-         && mv /tmp/helm/linux-amd64/helm /usr/local/bin/helm \
-         && rm -rf /tmp/helm/
+         && sudo mv /tmp/helm/linux-amd64/helm /usr/local/bin/helm \
+         && sudo rm -rf /tmp/helm/
       shell: bash
       if: ${{ inputs.helm_version == '2' }}
       
