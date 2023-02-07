@@ -37,7 +37,7 @@ As part of the journey towards Continuous Deployment, we have created Automated 
  - Create CR and return the CR number created in BMC Remedy based on your input selection 
 ![image](https://user-images.githubusercontent.com/19665606/212329039-af681422-2d95-4143-b203-21c42410ab8e.png)
 
-**Step 2**: Include the below input parameter in your 'Release to Prod' workflow, (CR number will be available in the Step 1 workflow output whne you execute it)
+**Step 2**: Include the below input parameter in your 'Release to Prod' workflow, (CR number will be available in the Step 1 workflow output when you execute it)
 ```
      change_request_id:
        description: 'Provide the CR number for update workflow'
@@ -89,7 +89,11 @@ Snippet to be added **after** Production deployment step:
 | 9 | Business Impact | Provide your Business Impact | Sample: Test Business Impact | mandatory | 
 | 10 | For Risk and Impact assessment agreement, please refer this link - | Please go through the R&I assessment and agree | Yes | mandatory | 
 
-Please refer below high level overview on Automated CR for Phase 1 - 4 wall change without outage (with approval),
+**Step 5**: Once the above workflow is completed, CR will be created. Obtain the CR approval and pass CR number and other paramters to your 'Release to Production' workflow in order to complete the Production deployment. 
+
+**Note:**: In case of the microservices deployment involving multiple repos, please provide the list of repos involved in the 'Detailed description' field while creating CR and refer the same CR in all your deployment pipelines to update the CR status. 
+
+Please refer below high level overview on Automated CR for Phase 1 - 4 wall change without outage (with approval) explaining the above steps,
 ![Automated CR workflow](https://github.com/DigitalInnovation/cloud-devsecops-pipelineactions/blob/branch-bmc-helix-action/docs/Automated%20CR%20-%20phase%201%20updated.jpg)
 
 Reference workflows for this Automated CR, <br>
