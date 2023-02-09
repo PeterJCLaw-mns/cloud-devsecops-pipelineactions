@@ -19,9 +19,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: ls -lart
-      shell: bash
-
+    
     - run : echo test $RUNNER_NAME $RUNNER_OS $RUNNER_ARCH $RUNNER_TEMP
       shell: bash
       
@@ -31,10 +29,9 @@ runs:
         creds: '{"clientId": "${{ inputs.sp_client_id }}", "clientSecret": "${{ inputs.sp_client_secret }}", "subscriptionId": "${{ inputs.subscription_id }}", "tenantId": "${{ inputs.tenant_id }}"}'
       
     
-    - name: connect AKV
+    - name: get akv info
       run: |
-      shell: bash
-         IFS=, read -ra values <<< "${{inputs.secret_keys}}"
+             IFS=, read -ra values <<< "${{inputs.secret_keys}}"
                for v in "${values[@]}"
                do
                  keyValue=''
@@ -58,7 +55,9 @@ runs:
            az logout
            az cache purge
            az account clear
-         
+        shell: bash
+      
+      
 #     - name: logout of Azure
 #       run: |
 #         az logout
