@@ -31,31 +31,26 @@ runs:
     
     - name: get akv info
       run: |
-             IFS=, read -ra values <<< "${{inputs.secret_keys}}"
-               for v in "${values[@]}"
-               do
-                 keyValue=''
-                 if az keyvault secret list --vault-name "${{inputs.keyvault}}" --query "[].name" | grep $v
-                 then
-                     echo "Secret $v exists"
-
-                     keyValue=$(az keyvault secret show --name "$v" --vault-name "${{inputs.keyvault}}" --query "value" -o tsv)
-
-                     echo "::add-mask::${keyValue}"        
-
-                 else 
-                  echo "Secret $v Does not exist"
-                 fi
-
-                 echo "$v<<EOF" >> $GITHUB_ENV
-                 echo "$keyValue" >> $GITHUB_ENV
-                 echo "EOF" >> $GITHUB_ENV
-
-               done
-           az logout
-           az cache purge
-           az account clear
-        shell: bash
+         IFS=, read -ra values <<< "${{inputs.secret_keys}}"
+         for v in "${values[@]}"
+         do
+           keyValue=''
+           if az keyvault secret list --vault-name "${{inputs.keyvault}}" --query "[].name" | grep $v
+           then
+              echo "Secret $v exists"
+              keyValue=$(az keyvault secret show --name "$v" --vault-name "${{inputs.keyvault}}" --query "value" -o tsv)
+              echo "::add-mask::${keyValue}"        
+           else 
+              echo "Secret $v Does not exist"
+           fi
+           echo "$v<<EOF" >> $GITHUB_ENV
+           echo "$keyValue" >> $GITHUB_ENV
+           echo "EOF" >> $GITHUB_ENV
+         done
+         az logout
+         az cache purge
+         az account clear
+      shell: bash
       
       
 #     - name: logout of Azure
