@@ -29,7 +29,7 @@ runs:
       uses: azure/login@v1.4.6
       with:
         creds: '{"clientId": "${{ inputs.sp_client_id }}", "clientSecret": "${{ inputs.sp_client_secret }}", "subscriptionId": "${{ inputs.subscription_id }}", "tenantId": "${{ inputs.tenant_id }}"}'
-      if:  ${{ inputs.azure_profile == '' }}
+      
     
     - name: connect AKV
       run: |
