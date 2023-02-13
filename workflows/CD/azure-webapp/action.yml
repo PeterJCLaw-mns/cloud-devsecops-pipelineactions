@@ -85,15 +85,14 @@ runs:
         app-name: ${{inputs.webapp_name}}
         images: ${{inputs.image_name}}:${{inputs.image_tag}}
         slot-name: ${{inputs.slot_name}}
-      if:  ${{ inputs.azure_profile == '' && inputs.image_name == '' }}
+      if:  ${{ inputs.azure_profile == '' && inputs.image_name != '' }}
       
     - uses: azure/webapps-deploy@v2
       with:
         app-name: ${{inputs.webapp_name}}
-        images: ${{inputs.image_name}}:${{inputs.image_tag}}
         package: ${{inputs.source_path}}
         slot-name: ${{inputs.slot_name}}
-      if:  ${{ inputs.azure_profile == '' && inputs.image_name != '' }}  
+      if:  ${{ inputs.azure_profile == '' && inputs.image_name == '' }}  
 
 
 #   - name: Deploy to Azure Web Apps
