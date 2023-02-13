@@ -52,11 +52,11 @@ runs:
       id: get_image_path
       run: |
         if [ -z ${{inputs.image_name}} ]; then
-          image=${{inputs.image_name}}:${{inputs.image_tag}}
+          image_path=''
         else
-          image=''
+          image_path=${{inputs.image_name}}:${{inputs.image_tag}}
         if
-        echo "IMAGE=${image}" >> $GITHUB_OUTPUT
+        echo "IMAGE=${image_path}" >> $GITHUB_OUTPUT
         
     - name: 'Deploy to Azure WebApp using Profile and Source'
       if: ${{ inputs.azure_profile != '' }}
