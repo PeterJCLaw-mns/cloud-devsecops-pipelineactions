@@ -8,8 +8,12 @@ inputs:
     required: true
   subscription_id:
     required: true
+  # this is a spelling mistake and need to be removed. At this point waiting on INT team as they use it in many pipeline  
   tenent_id:
     required: true
+  #tenant_id:
+  #  required: true
+  #  default: 'bd5c6713-7399-4b31-be79-78f2d078e543'
   keyvault:
     required: true
   secret_keys:
@@ -19,40 +23,75 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: ls -lart
-      shell: bash
-
+    
     - run : echo test $RUNNER_NAME $RUNNER_OS $RUNNER_ARCH $RUNNER_TEMP
       shell: bash
-
-    - uses: azure/CLI@v1
-      id: GetAKVSecrets
-      with:  
-        azcliversion: 2.30.0
-        inlineScript: |
-            az login --service-principal -u ${{ inputs.sp_client_id }} -p ${{ inputs.sp_client_secret }} --tenant ${{ inputs.tenent_id }}
-            az account set --subscription '${{ inputs.subscription_id }}'
-
-            IFS=, read -ra values <<< "${{inputs.secret_keys}}"
-            for v in "${values[@]}"
-            do
-              keyValue=''
-              if az keyvault secret list --vault-name "${{inputs.keyvault}}" --query "[].name" | grep $v
-              then
-                  echo "Secret $v exists"
-
-                  keyValue=$(az keyvault secret show --name "$v" --vault-name "${{inputs.keyvault}}" --query "value" -o tsv)
-
-                  echo "::add-mask::${keyValue}"        
-         
-              else 
-               echo "Secret $v Does not exist"
-              fi
-
-              echo "$v<<EOF" >> $GITHUB_ENV
-              echo "$keyValue" >> $GITHUB_ENV
-              echo "EOF" >> $GITHUB_ENV
+      
+    - name: 'Deploy to Azure Webapp using Service Principal - by login to Azure'
+      uses: azure/login@v1.4.6
+      with:
+        creds: '{"clientId": "${{ inputs.sp_client_id }}", "clientSecret": "${{ inputs.sp_client_secret }}", "subscriptionId": "${{ inputs.subscription_id }}", "tenantId": "${{ inputs.tenent_id }}"}'
+      
     
-            done
+    - name: get akv info
+      run: |
+         IFS=, read -ra values <<< "${{inputs.secret_keys}}"
+         for v in "${values[@]}"
+         do
+           keyValue=''
+           if az keyvault secret list --vault-name "${{inputs.keyvault}}" --query "[].name" | grep $v
+           then
+              echo "Secret $v exists"
+              keyValue=$(az keyvault secret show --name "$v" --vault-name "${{inputs.keyvault}}" --query "value" -o tsv)
+              echo "::add-mask::${keyValue}"        
+           else 
+              echo "Secret $v Does not exist"
+           fi
+           echo "$v<<EOF" >> $GITHUB_ENV
+           echo "$keyValue" >> $GITHUB_ENV
+           echo "EOF" >> $GITHUB_ENV
+         done
+         az logout
+         az cache purge
+         az account clear
+      shell: bash
+      
+      
+#     - name: logout of Azure
+#       run: |
+#         az logout
+#         az cache purge
+#         az account clear
+        
+        
+#     - uses: azure/CLI@v1
+#       id: GetAKVSecrets
+#       with:  
+#         azcliversion: 2.30.0
+#         inlineScript: |
+#             az login --service-principal -u ${{ inputs.sp_client_id }} -p ${{ inputs.sp_client_secret }} --tenant ${{ inputs.tenent_id }}
+#             az account set --subscription '${{ inputs.subscription_id }}'
+
+#             IFS=, read -ra values <<< "${{inputs.secret_keys}}"
+#             for v in "${values[@]}"
+#             do
+#               keyValue=''
+#               if az keyvault secret list --vault-name "${{inputs.keyvault}}" --query "[].name" | grep $v
+#               then
+#                   echo "Secret $v exists"
+
+#                   keyValue=$(az keyvault secret show --name "$v" --vault-name "${{inputs.keyvault}}" --query "value" -o tsv)
+
+#                   echo "::add-mask::${keyValue}"        
+         
+#               else 
+#                echo "Secret $v Does not exist"
+#               fi
+
+#               echo "$v<<EOF" >> $GITHUB_ENV
+#               echo "$keyValue" >> $GITHUB_ENV
+#               echo "EOF" >> $GITHUB_ENV
+    
+#             done
 
    
