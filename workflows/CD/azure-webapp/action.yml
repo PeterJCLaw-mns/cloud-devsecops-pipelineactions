@@ -52,8 +52,8 @@ runs:
       with: 
         app-name: ${{inputs.webapp_name}}
         publish-profile: ${{ inputs.azure_profile }}
-        source-path: ${{inputs.source_path}}
-        image: ${{inputs.image_name}}:${{inputs.image_tag}}
+        package: ${{inputs.source_path}}
+        images: ${{inputs.image_name}}:${{inputs.image_tag}}
         slot-name: ${{inputs.slot_name}}
         
     
@@ -82,8 +82,8 @@ runs:
     - uses: azure/webapps-deploy@v2
       with:
         app-name: ${{inputs.webapp_name}}
-        image: ${{inputs.image_name}}:${{inputs.image_tag}}
-        source_path: ${{inputs.source_path}}
+        images: ${{inputs.image_name}}:${{inputs.image_tag}}
+        package: ${{inputs.source_path}}
         slot-name: ${{inputs.slot_name}}
       if:  ${{ inputs.azure_profile == '' }}
 
