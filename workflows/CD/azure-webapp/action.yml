@@ -58,7 +58,8 @@ runs:
         fi
         echo "IMAGE=${image_path}" >> $GITHUB_OUTPUT
       shell: bash
-      
+     
+     
     - name: 'Deploy to Azure WebApp using Profile and Source'
       if: ${{ inputs.azure_profile != '' }}
       uses: azure/webapps-deploy@v2
@@ -66,7 +67,7 @@ runs:
         app-name: ${{inputs.webapp_name}}
         publish-profile: ${{ inputs.azure_profile }}
         package: ${{inputs.source_path}}
-        images: ${{inputs.image_name}}:${{inputs.image_tag}}
+        images: ${{steps.get_image_path.outputs.IMAGE}}
         slot-name: ${{inputs.slot_name}}
         
     
@@ -95,7 +96,7 @@ runs:
     - uses: azure/webapps-deploy@v2
       with:
         app-name: ${{inputs.webapp_name}}
-        images: ${{steps.get_image_path.outputs.IMAGE}}  #${{inputs.image_name}}:${{inputs.image_tag}}
+        images: ${{steps.get_image_path.outputs.IMAGE}}
         package: ${{inputs.source_path}}
         slot-name: ${{inputs.slot_name}}
       if:  ${{ inputs.azure_profile == ''  }}
