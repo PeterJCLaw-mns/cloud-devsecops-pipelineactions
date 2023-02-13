@@ -55,7 +55,7 @@ runs:
           image_path=''
         else
           image_path=${{inputs.image_name}}:${{inputs.image_tag}}
-        if
+        fi
         echo "IMAGE=${image_path}" >> $GITHUB_OUTPUT
       shell: bash
       
