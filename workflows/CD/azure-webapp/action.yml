@@ -20,6 +20,7 @@ inputs:
     required: false
   image_tag:
     required: false
+    default: latest
   azure_profile:
     required: false
   azure_sp: 
