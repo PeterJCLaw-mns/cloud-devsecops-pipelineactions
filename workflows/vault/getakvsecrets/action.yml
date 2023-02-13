@@ -8,7 +8,7 @@ inputs:
     required: true
   subscription_id:
     required: true
-  tenant_id:
+  tenent_id:
     required: true
   keyvault:
     required: true
@@ -26,7 +26,7 @@ runs:
     - name: 'Deploy to Azure Webapp using Service Principal - by login to Azure'
       uses: azure/login@v1.4.6
       with:
-        creds: '{"clientId": "${{ inputs.sp_client_id }}", "clientSecret": "${{ inputs.sp_client_secret }}", "subscriptionId": "${{ inputs.subscription_id }}", "tenantId": "${{ inputs.tenant_id }}"}'
+        creds: '{"clientId": "${{ inputs.sp_client_id }}", "clientSecret": "${{ inputs.sp_client_secret }}", "subscriptionId": "${{ inputs.subscription_id }}", "tenantId": "${{ inputs.tenent_id }}"}'
       
     
     - name: get akv info
