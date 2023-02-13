@@ -129,7 +129,7 @@ runs:
         canary_weightage: ${{inputs.canary_weightage}}  
         
     - name: ========== AZURE WEB APP Deployment ==========
-      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/azure-webapp@v1.2.12
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/azure-webapp@gv_akv_test
       if: ${{ inputs.is_azure_webapp_deployment == 'true'}}
       with:
         environment: ${{inputs.environment}}
