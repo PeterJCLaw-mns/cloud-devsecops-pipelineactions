@@ -43,10 +43,21 @@ inputs:
 runs:
   using: "composite"
   steps:
+  
     - run: echo 'Deploy to Azure WebApp using Profile and Source path / Image'
       if: ${{ inputs.azure_profile != ''  }}
       shell: bash
       
+    - name: retreive image info
+      id: get_image_path
+      run: |
+        if [ -z ${{inputs.image_name}} ]; then
+          image=${{inputs.image_name}}:${{inputs.image_tag}}
+        else
+          image=''
+        if
+        echo "IMAGE=${image}" >> $GITHUB_OUTPUT
+        
     - name: 'Deploy to Azure WebApp using Profile and Source'
       if: ${{ inputs.azure_profile != '' }}
       uses: azure/webapps-deploy@v2
@@ -83,17 +94,21 @@ runs:
     - uses: azure/webapps-deploy@v2
       with:
         app-name: ${{inputs.webapp_name}}
-        images: ${{inputs.image_name}}:${{inputs.image_tag}}
+        images: ${{steps.get_image_path.outputs.IMAGE}}  #${{inputs.image_name}}:${{inputs.image_tag}}
         package: ${{inputs.source_path}}
         slot-name: ${{inputs.slot_name}}
-      if:  ${{ inputs.azure_profile == '' && inputs.image_name != '' }}
+      if:  ${{ inputs.azure_profile == ''  }}
       
-    - uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{inputs.webapp_name}}
-        package: ${{inputs.source_path}}
-        slot-name: ${{inputs.slot_name}}
-      if:  ${{ inputs.azure_profile == '' && inputs.image_name == '' }}  
+      
+      
+      
+      
+#     - uses: azure/webapps-deploy@v2
+#       with:
+#         app-name: ${{inputs.webapp_name}}
+#         package: ${{inputs.source_path}}
+#         slot-name: ${{inputs.slot_name}}
+#       if:  ${{ inputs.azure_profile == '' && inputs.image_name == '' }}  
 
 
 #   - name: Deploy to Azure Web Apps
