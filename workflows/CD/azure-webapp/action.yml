@@ -57,7 +57,8 @@ runs:
           image_path=${{inputs.image_name}}:${{inputs.image_tag}}
         if
         echo "IMAGE=${image_path}" >> $GITHUB_OUTPUT
-        
+      shell: bash
+      
     - name: 'Deploy to Azure WebApp using Profile and Source'
       if: ${{ inputs.azure_profile != '' }}
       uses: azure/webapps-deploy@v2
