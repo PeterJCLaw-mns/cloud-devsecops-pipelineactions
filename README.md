@@ -60,7 +60,7 @@ Snippet to be added **before** Production deployment step:
         update_status: "Implementation In Progress"
         update_reason: ""
 ```
-Snippet to be added **after** Production deployment step:
+Snippet to be added **after** Production deployment step, also add a condition to run this step only **if the deployment is successful** :
 
 ```
       uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr@branch-bmc-helix-action
