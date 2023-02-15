@@ -32,19 +32,19 @@ As part of the journey towards Continuous Deployment, we have created Automated 
 
 #### **How to Consume**:
 
-**Step 1**: Go to the New worklfow section in your repo (https://github.com/DigitalInnovation/{{your-repo-name}}/actions/new), as shown below and select 'M&S - Automated CR workflow' workflow in order to get your automated CR workflow which performs below and commit the workflow file in your repository,
+**Step 1**: Go to the New worklfow section in your repo (https://github.com/DigitalInnovation/{{your-repo-name}}/actions/new), as shown below and select 'M&S - Automated CR workflow' workflow in order to get your automated CR workflow which performs below and **commit** the workflow file in your repository,
  - Display Conflict details based on your Scheduled start and end date
  - Create CR and return the CR number created in BMC Remedy based on your input selection 
 ![image](https://user-images.githubusercontent.com/19665606/212329039-af681422-2d95-4143-b203-21c42410ab8e.png)
 
-**Step 2**: Include the below input parameter in your 'Release to Prod' workflow, (CR number will be available in the Step 1 workflow output when you execute it)
+**Step 2**: Include the below input parameter in your existing 'Release to Prod' workflow, (CR number will be available in the Step 1 workflow output when you execute it)
 ```
      change_request_id:
        description: 'Provide the CR number for update workflow'
        required: true
        type: string
 ```
-**Step 3**: Include the below code snippets in your 'Release to Production' workflow, before and after the Production deployment step in order to update the CR as 'Implementation in progress' and 'Completed' respectively, so that CR status will be updated properly after the Prodution deploymet is completed,
+**Step 3**: Include the below code snippets in your existing 'Release to Production' workflow, before and after the Production deployment step in order to update the CR as 'Implementation in progress' and 'Completed' respectively, so that CR status will be updated properly after the Prodution deploymet is completed,
 
 Snippet to be added **before** Production deployment step:
 
@@ -75,12 +75,12 @@ Snippet to be added **after** Production deployment step, also add a condition t
         update_reason: "Final Review Complete"
 ```
 
-**Step 4**: Run the workflow which you have committed in Step 1 by providing the below input values as per your Product,
+**Step 4**: **Run** the workflow which you have committed in **Step 1** by providing the below input values as per your Product,
 | S.No | Workflow dispatch inputs | Remarks | Example | Mandatory / Optional | 
 | ------------- | ------------------------------------------- | ----------------------------- | --------------|---------------------- |
 | 1 | Change Initiated Portfolio | Input your Portfolio name | Foods | mandatory | 
-| 2 | Change Implementation Start Date (YYYY-MM-DDTHH:MM:SS).Provide future date | Input your Scheduled start date in the format, YYYY-MM-DDTHH:MM:SS and also provide future date | 2023-01-28T05:00:00 | mandatory | 
-| 3 | Change Implementation End Date (YYYY-MM-DDTHH:MM:SS).Provide future date | Input your Scheduled end date in the format, YYYY-MM-DDTHH:MM:SS and also provide future date and value greater than start date | 2023-01-28T08:00:00 | mandatory | 
+| 2 | Change Implementation Start Date (YYYY-MM-DDTHH:MM:SS).Provide future date | Input your Scheduled start date in the format, YYYY-MM-DDTHH:MM:SS and also provide future time | 2023-01-28T05:00:00 | mandatory | 
+| 3 | Change Implementation End Date (YYYY-MM-DDTHH:MM:SS).Provide future date | Input your Scheduled end date in the format, YYYY-MM-DDTHH:MM:SS and also provide future time and value greater than start date | 2023-01-28T08:00:00 | mandatory | 
 | 4 | Application Name | Input your Application name | Transport Management System (TMS) | mandatory | 
 | 5 | Change Description | Input your Change description | Sample: This change is about the enabling logging in the application | mandatory | 
 | 6 | Change Category | Input your Change Category | Application | mandatory | 
@@ -89,7 +89,7 @@ Snippet to be added **after** Production deployment step, also add a condition t
 | 9 | Business Impact | Provide your Business Impact | Sample: Test Business Impact | mandatory | 
 | 10 | For Risk and Impact assessment agreement, please refer this link - | Please go through the R&I assessment and agree | Yes | mandatory | 
 
-**Step 5**: Once the above workflow is completed, CR will be created. Obtain the CR approval and pass CR number and other paramters to your 'Release to Production' workflow in order to complete the Production deployment. 
+**Step 5**: Once the above workflow is completed, CR will be created. Obtain the CR approval and pass CR number, other paramter(s) to your existing 'Release to Production' workflow in order to complete the Production deployment. 
 
 **Note:**: In case of the microservices deployment involving multiple repos, please provide the list of repos involved in the 'Detailed description' field while creating CR and refer the same CR in all your deployment pipelines to update the CR status. 
 
