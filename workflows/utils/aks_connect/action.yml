@@ -16,8 +16,6 @@ inputs:
     required: true
     default: 'bd5c6713-7399-4b31-be79-78f2d078e543'
 
-
-
 runs:
   using: "composite"
   steps:
@@ -26,17 +24,18 @@ runs:
       shell: bash
     
     - name: Install Kubelogin
-        uses: carlosperate/download-file-action@v1
-        with:
-          file-url: 'https://github.com/Azure/kubelogin/releases/download/v0.0.26/kubelogin-linux-amd64.zip'
-          file-name: 'kubelogin.zip'
-          location: './kubelogin'   
+      uses: carlosperate/download-file-action@v1
+      with:
+        file-url: 'https://github.com/Azure/kubelogin/releases/download/v0.0.26/kubelogin-linux-amd64.zip'
+        file-name: 'kubelogin.zip'
+        location: './kubelogin'   
       
-      - run: |
-          unzip $GITHUB_WORKSPACE/kubelogin/kubelogin.zip -d $GITHUB_WORKSPACE/kubelogin
-          mv $GITHUB_WORKSPACE/kubelogin/bin/linux_amd64/kubelogin $GITHUB_WORKSPACE/kubelogin/kubelogin
-          echo "$GITHUB_WORKSPACE/kubelogin" >> $GITHUB_PATH
-    
+    - run: |
+        unzip $GITHUB_WORKSPACE/kubelogin/kubelogin.zip -d $GITHUB_WORKSPACE/kubelogin
+        mv $GITHUB_WORKSPACE/kubelogin/bin/linux_amd64/kubelogin $GITHUB_WORKSPACE/kubelogin/kubelogin
+        ls -lart $GITHUB_WORKSPACE/kubelogin/kubelogin
+        echo "$GITHUB_WORKSPACE/kubelogin" >> $GITHUB_PATH
+
     - name: connect AKS
         id: aks_connect
         env:
