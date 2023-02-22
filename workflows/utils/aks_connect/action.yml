@@ -6,7 +6,7 @@ inputs:
   sp_client_secret:
     required: true
   subscription_id:
-    required: true
+    required: false
   aks_cluster_name:
     required: true
   aks_cluster_rg:
