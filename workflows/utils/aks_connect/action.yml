@@ -57,9 +57,9 @@ runs:
           cat '$GITHUB_WORKSPACE/aks_kube_config'
           kube_value=$(<${GITHUB_WORKSPACE}/aks_kube_config )
           #echo "::add-mask::${kube_value}"
-          echo "AKS_KUBE_CONFIG<<EOF" >> $GITHUB_OUTPUT
-          echo "$kube_value" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "AKS_KUBE_CONFIG<<EOF" >> $GITHUB_ENV
+          echo "$kube_value" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
         shell: bash
         
         
