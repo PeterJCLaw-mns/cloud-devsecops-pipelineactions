@@ -30,36 +30,38 @@ runs:
         file-name: 'kubelogin.zip'
         location: './kubelogin'   
       
-    - run: |
+    - name: set kubelogin to path
+      run: |
         unzip $GITHUB_WORKSPACE/kubelogin/kubelogin.zip -d $GITHUB_WORKSPACE/kubelogin
         mv $GITHUB_WORKSPACE/kubelogin/bin/linux_amd64/kubelogin $GITHUB_WORKSPACE/kubelogin/kubelogin
         ls -lart $GITHUB_WORKSPACE/kubelogin/kubelogin
         echo "$GITHUB_WORKSPACE/kubelogin" >> $GITHUB_PATH
-
+      shell: bash
+      
     - name: connect AKS
-        id: aks_connect
-        env:
-          KUBECONFIG: "${{github.workspace}}/aks_kube_config"
-          AAD_SERVICE_PRINCIPAL_CLIENT_ID: ${{inputs.sp_client_id}}
-          AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: ${{inputs.sp_client_secret}}
-        run : |
-          echo " login to aks"
-          az login --service-principal -u ${{inputs.sp_client_id}} -p ${{inputs.sp_client_secret}} --tenant ${{inputs.tenant_id}} > /dev/null #2>&1
-          echo  "login successful, getting credentials"
-          sleep 5s
-          az aks get-credentials --name ${{inputs.aks_cluster_name}} --resource-group ${{inputs.aks_cluster_rg}} --file '$GITHUB_WORKSPACE/aks_kube_config'
-          
-          echo "converting kubeconfig for authentication"
-          "$GITHUB_WORKSPACE/kubelogin/kubelogin" convert-kubeconfig -l spn
-          
-          kubectl get ns
-          cat '$GITHUB_WORKSPACE/aks_kube_config'
-          kube_value=$(<${GITHUB_WORKSPACE}/aks_kube_config )
-          #echo "::add-mask::${kube_value}"
-          echo "AKS_KUBE_CONFIG<<EOF" >> $GITHUB_ENV
-          echo "$kube_value" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-        shell: bash
+      id: aks_connect
+      env:
+        KUBECONFIG: "${{github.workspace}}/aks_kube_config"
+        AAD_SERVICE_PRINCIPAL_CLIENT_ID: ${{inputs.sp_client_id}}
+        AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: ${{inputs.sp_client_secret}}
+      run : |
+        echo " login to aks"
+        az login --service-principal -u ${{inputs.sp_client_id}} -p ${{inputs.sp_client_secret}} --tenant ${{inputs.tenant_id}} > /dev/null #2>&1
+        echo  "login successful, getting credentials"
+        sleep 5s
+        az aks get-credentials --name ${{inputs.aks_cluster_name}} --resource-group ${{inputs.aks_cluster_rg}} --file '$GITHUB_WORKSPACE/aks_kube_config'
+
+        echo "converting kubeconfig for authentication"
+        "$GITHUB_WORKSPACE/kubelogin/kubelogin" convert-kubeconfig -l spn
+
+        kubectl get ns
+        cat '$GITHUB_WORKSPACE/aks_kube_config'
+        kube_value=$(<${GITHUB_WORKSPACE}/aks_kube_config )
+        #echo "::add-mask::${kube_value}"
+        echo "AKS_KUBE_CONFIG<<EOF" >> $GITHUB_ENV
+        echo "$kube_value" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+      shell: bash
         
         
         
