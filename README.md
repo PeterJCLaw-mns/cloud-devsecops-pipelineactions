@@ -91,7 +91,9 @@ Snippet to be added **after** Production deployment step, also add a condition t
 
 **Step 5**: Once the above workflow is completed, CR will be created. Obtain the CR approval and pass CR number, other paramter(s) to your existing 'Release to Production' workflow in order to complete the Production deployment. 
 
-**Note:**: In case of the microservices deployment involving multiple repos, please provide the list of repos involved in the 'Detailed description' field while creating CR and refer the same CR in all your deployment pipelines to update the CR status. 
+**Note:**
+- In case of the microservices deployment involving multiple repos, please provide the list of repos involved in the 'Detailed description' field while creating CR and re-fer the same CR in all your deployment pipelines to update the CR status. 
+- Composite Action **branch reference** will be changed from **'branch-bmc-helix-action' to 'latest'** once the UAT is completed. 
 
 Please refer below high level overview on Automated CR for Phase 1 - 4 wall change without outage (with approval) explaining the above steps,
 ![Automated CR workflow](https://github.com/DigitalInnovation/cloud-devsecops-pipelineactions/blob/branch-bmc-helix-action/docs/Automated%20CR%20-%20phase%201%20updated.jpg)
