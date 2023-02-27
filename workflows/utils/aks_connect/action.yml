@@ -73,13 +73,13 @@ runs:
         echo "EOF" >> $GITHUB_ENV
       shell: bash
       
-    - name: Mask multiline env
-      run: |
-         while read -r line;
-         do
-           echo "::add-mask::${line}"
-         done <<< "${{ env.AKS_KUBE_CONFIG }}"
-      shell: bash
+#     - name: Mask multiline env
+#       run: |
+#          while read -r line;
+#          do
+#            echo "::add-mask::${line}"
+#          done <<< "${{ env.AKS_KUBE_CONFIG }}"
+#       shell: bash
         
         
         
