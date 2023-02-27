@@ -61,6 +61,14 @@ runs:
         kube_value=$(<${GITHUB_WORKSPACE}/aks_kube_config )
         #echo "::add-mask::$kube_value"
         
+    - name: Mask multiline env
+      run: |
+         while read -r line;
+         do
+           echo "::add-mask::${line}"
+         done <<< $kube_value
+      shell: bash
+        
         echo "AKS_KUBE_CONFIG<<EOF" >> $GITHUB_ENV
         echo "$kube_value" >> $GITHUB_ENV
         echo "EOF" >> $GITHUB_ENV
