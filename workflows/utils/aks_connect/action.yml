@@ -46,16 +46,18 @@ runs:
         AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: ${{inputs.sp_client_secret}}
       run : |
         echo " login to aks"
+        
         az login --service-principal -u ${{inputs.sp_client_id}} -p ${{inputs.sp_client_secret}} --tenant ${{inputs.tenant_id}} > /dev/null #2>&1
         echo  "login successful, getting credentials"
-        sleep 5s
+        sleep 7s
+        
         az aks get-credentials --name ${{inputs.aks_cluster_name}} --resource-group ${{inputs.aks_cluster_rg}} --file "${GITHUB_WORKSPACE}/aks_kube_config"
 
         echo "converting kubeconfig for authentication"
         "$GITHUB_WORKSPACE/kubelogin/kubelogin" convert-kubeconfig -l spn
 
-        kubectl get ns
-        cat "$GITHUB_WORKSPACE/aks_kube_config"
+        
+        
         kube_value=$(<${GITHUB_WORKSPACE}/aks_kube_config )
         #echo "::add-mask::$kube_value"
         
@@ -69,7 +71,7 @@ runs:
          while read -r line;
          do
            echo "::add-mask::${line}"
-         done <<< "${{ env.AKS_KUBE_CONFIG }}"
+         done << "${{ env.AKS_KUBE_CONFIG }}"
       shell: bash
         
         
