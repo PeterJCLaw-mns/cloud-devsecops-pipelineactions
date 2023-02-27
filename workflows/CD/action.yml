@@ -83,7 +83,7 @@ runs:
     - run : echo $RUNNER_NAME $RUNNER_OS $RUNNER_ARCH $RUNNER_TEMP
       shell: bash  
     - name: ========== Deploy project using helm ==========
-      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/helm@v1.2.13
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/helm@hopper_aks_deploy_updates  #v1.2.13
       if: ${{ inputs.is_helm_deployment == 'true' && inputs.release_strategy == 'standard'}}
       with:
         environment: ${{inputs.environment}}
