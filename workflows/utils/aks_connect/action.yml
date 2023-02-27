@@ -55,7 +55,7 @@ runs:
 
         echo "converting kubeconfig for authentication"
         "$GITHUB_WORKSPACE/kubelogin/kubelogin" convert-kubeconfig -l spn
-
+      shell: bash
         
         
         kube_value=$(<${GITHUB_WORKSPACE}/aks_kube_config )
