@@ -1,0 +1,85 @@
+name: 'Connect to AKS Cluster using SP'
+description: 'Connect to AKS Cluster using SP'
+inputs:
+  sp_client_id:
+    required: true
+  sp_client_secret:
+    required: true
+  subscription_id:
+    required: false
+  aks_cluster_name:
+    required: true
+  aks_cluster_rg:
+    required: true
+  # this is a spelling mistake and need to be removed. At this point waiting on INT team as they use it in many pipeline  
+  tenant_id:
+    required: true
+    default: 'bd5c6713-7399-4b31-be79-78f2d078e543'
+
+runs:
+  using: "composite"
+  steps:
+    
+    - run : echo test $RUNNER_NAME $RUNNER_OS $RUNNER_ARCH $RUNNER_TEMP
+      shell: bash
+    
+    - name: Install Kubelogin
+      uses: carlosperate/download-file-action@v1
+      with:
+        file-url: 'https://github.com/Azure/kubelogin/releases/download/v0.0.26/kubelogin-linux-amd64.zip'
+        file-name: 'kubelogin.zip'
+        location: './kubelogin'   
+      
+    - name: set kubelogin to path
+      run: |
+        unzip $GITHUB_WORKSPACE/kubelogin/kubelogin.zip -d $GITHUB_WORKSPACE/kubelogin
+        mv $GITHUB_WORKSPACE/kubelogin/bin/linux_amd64/kubelogin $GITHUB_WORKSPACE/kubelogin/kubelogin
+        ls -lart $GITHUB_WORKSPACE/kubelogin/kubelogin
+        echo "$GITHUB_WORKSPACE/kubelogin" >> $GITHUB_PATH
+      shell: bash
+      
+    - name: connect AKS
+      id: aks_connect
+      env:
+        KUBECONFIG: "${{github.workspace}}/aks_kube_config"
+        AAD_SERVICE_PRINCIPAL_CLIENT_ID: ${{inputs.sp_client_id}}
+        AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: ${{inputs.sp_client_secret}}
+      run : |
+        echo " login to aks"
+        
+        az login --service-principal -u ${{inputs.sp_client_id}} -p ${{inputs.sp_client_secret}} --tenant ${{inputs.tenant_id}} > /dev/null #2>&1
+        echo  "login successful, getting credentials"
+        sleep 7s
+        
+        az aks get-credentials --name ${{inputs.aks_cluster_name}} --resource-group ${{inputs.aks_cluster_rg}} --file "${GITHUB_WORKSPACE}/aks_kube_config"
+
+        echo "converting kubeconfig for authentication"
+        "$GITHUB_WORKSPACE/kubelogin/kubelogin" convert-kubeconfig -l spn
+      
+        
+        
+        kube_value=$(<${GITHUB_WORKSPACE}/aks_kube_config )
+        #echo "::add-mask::$kube_value"
+        
+    
+         while read -r line;
+         do
+           echo "::add-mask::${line}"
+         done <<< $kube_value
+     
+        
+        echo "AKS_KUBE_CONFIG<<EOF" >> $GITHUB_ENV
+        echo "$kube_value" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+      shell: bash
+      
+#     - name: Mask multiline env
+#       run: |
+#          while read -r line;
+#          do
+#            echo "::add-mask::${line}"
+#          done <<< "${{ env.AKS_KUBE_CONFIG }}"
+#       shell: bash
+        
+        
+        
