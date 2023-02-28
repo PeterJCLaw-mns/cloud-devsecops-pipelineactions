@@ -103,7 +103,7 @@ Snippet to be added **after** Production deployment step, also add a condition t
 - Composite Action **branch reference** will be changed from **'branch-bmc-helix-action' to 'latest'** once the UAT is completed. 
 
 Please refer below high level overview on Automated CR for Phase 1 - 4 wall change without outage (with approval) explaining the above steps,
-![Automated CR workflow](https://github.com/DigitalInnovation/cloud-devsecops-pipelineactions/blob/branch-bmc-helix-action/docs/Automated%20CR%20-%20phase%201%20updated.jpg)
+![image](https://user-images.githubusercontent.com/19665606/221855811-98782e2e-81bb-449f-9530-99ea5bde80c3.png)
 
 Reference workflows for this Automated CR, <br>
 Create CR - https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/cloud9-devsecops-automated-cr-workflow.yml <br>
