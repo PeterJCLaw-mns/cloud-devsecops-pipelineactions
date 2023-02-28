@@ -83,9 +83,9 @@ Snippet to be added **after** Production deployment step, also add a condition t
 ```
 
 **Step 4**: **Run** the workflow which you have committed in **Step 1** by providing the below input values as per your Product,
+
 | S.No | Workflow dispatch inputs | Remarks | Example | Mandatory / Optional | 
 | ------------- | ------------------------------------------- | ----------------------------- | --------------|---------------------- |
-
 | 1 | Change Initiated Portfolio | Input your Portfolio name | Foods | mandatory | 
 | 2 | Change Implementation Start Date (YYYY-MM-DDTHH:MM:SS).Provide future date | Input your Scheduled start date in the format, YYYY-MM-DDTHH:MM:SS and also provide future time | 2023-01-28T05:00:00 | mandatory | 
 | 3 | Change Implementation End Date (YYYY-MM-DDTHH:MM:SS).Provide future date | Input your Scheduled end date in the format, YYYY-MM-DDTHH:MM:SS and also provide future time and value greater than start date | 2023-01-28T08:00:00 | mandatory | 
