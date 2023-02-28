@@ -39,7 +39,7 @@ As part of the journey towards Continuous Deployment, we have created Automated 
 
 #### **How to Consume**:
 
-**Step 1**: Go to the New worklfow section in your repo (<a href="https://github.com/DigitalInnovation/{{your-repo-name}}/actions/new">https://github.com/DigitalInnovation/{{your-repo-name}}/actions/new</a>), as shown below and select 'M&S - Automated CR workflow' workflow in order to get your automated CR workflow which performs below and **commit** the workflow file in your repository,
+**Step 1**: Go to the New worklfow section in your repo (<a href="https://github.com/DigitalInnovation/{{your-repo-name}}/actions/new">https://github.com/DigitalInnovation/{your-repo-name}/actions/new</a>), as shown below and select 'M&S - Automated CR workflow' workflow in order to get your automated CR workflow which performs below and **commit** the workflow file in your repository,
  - Display Conflict details based on your Scheduled start and end date
  - Create CR and return the CR number created in BMC Remedy based on your input selection 
 ![image](https://user-images.githubusercontent.com/19665606/212329039-af681422-2d95-4143-b203-21c42410ab8e.png)
