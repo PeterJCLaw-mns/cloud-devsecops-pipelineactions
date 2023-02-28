@@ -56,6 +56,7 @@ As part of the journey towards Continuous Deployment, we have created Automated 
 Snippet to be added **before** Production deployment step:
 
 ```
+{% raw %}
       uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr@branch-bmc-helix-action
       with:
         action: "update"
@@ -66,10 +67,12 @@ Snippet to be added **before** Production deployment step:
         change_request_id: ${{ github.event.inputs.change_request_id }}
         update_status: "Implementation In Progress"
         update_reason: ""
+        {% endraw %}
 ```
 Snippet to be added **after** Production deployment step, also add a condition to run this step only **if the deployment is successful** :
 
 ```
+{% raw %}
       uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr@branch-bmc-helix-action
       with:
         action: "update"
@@ -80,6 +83,7 @@ Snippet to be added **after** Production deployment step, also add a condition t
         change_request_id: ${{ github.event.inputs.change_request_id }}
         update_status: "Completed"
         update_reason: "Final Review Complete"
+        {% endraw %}
 ```
 
 **Step 4**: **Run** the workflow which you have committed in **Step 1** by providing the below input values as per your Product,
@@ -107,8 +111,8 @@ Please refer below high level overview on Automated CR for Phase 1 - 4 wall chan
 ![image](https://user-images.githubusercontent.com/19665606/221855811-98782e2e-81bb-449f-9530-99ea5bde80c3.png)
 
 Reference workflows for this Automated CR, <br>
-Create CR - https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/cloud9-devsecops-automated-cr-workflow.yml <br>
-Update CR - https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/bmc_update_cr_comp_actions.yml
+<a href="https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/cloud9-devsecops-automated-cr-workflow.yml">Create CR</a> <br>
+<a href="https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/bmc_update_cr_comp_actions.yml">Update CR</a>
 
 #### **Change Management Risk/Impact Assessment Questionnaire**
  - [ ] The preferred Change window for the change execution is correct and a safe time (non-business/ trading hours wherever possible and not to conflict with business events) to do this change with zero-downtime deployment
