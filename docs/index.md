@@ -32,6 +32,8 @@ Welcome to the DevSecOps reusable actions repository containing sample reusable 
 
 The above reusable actions are available for a variety of tech stacks, please see the [Workflows folder](https://github.com/DigitalInnovation/cloud-devsecops-pipelineactions/tree/main/workflows) for more.
 
+[Lean Change Management](https://github.com/DigitalInnovation/cloud-devsecops-pipelineactions/blob/branch-bmc-helix-action/docs/readme.md)
+
 ## Want to contribute?
 We openly welcome contributors to enhance and grow our resuable actions to improve M&S engineering experience. Please feel free to raise a pull request against this repo with your suggestions / additions and one of the Cloud DevSecOps team will review. 
 
