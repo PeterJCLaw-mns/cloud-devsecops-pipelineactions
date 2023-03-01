@@ -32,7 +32,7 @@ Welcome to the DevSecOps reusable actions repository containing sample reusable 
 
 The above reusable actions are available for a variety of tech stacks, please see the [Workflows folder](https://github.com/DigitalInnovation/cloud-devsecops-pipelineactions/tree/main/workflows) for more.
 
-### Automated Change Management
+### Lean Change Management - Automated Change Request
 As part of the journey towards Continuous Deployment, we have created Automated CR (Change Request) composite actions using which you will be able to create CR, check conflicts through pipeline itself rather than manually raising the CR in BMC Remedy. 
 
 **Tools involved**: BMC Helix iPaaS, BMC Remedy
