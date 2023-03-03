@@ -2,7 +2,11 @@ name: 'Bump Version in Version file'
 inputs:
   version_file:  # id of input
     required: true
-    default: ./version
+    default: "false"
+  version_to_bump:
+    required: true
+    default: "false"
+  
 outputs:
   bumped_version:
     description: "the version the is newly bumped to"
@@ -11,9 +15,19 @@ runs:
   using: "composite"
   steps:
     - name: run script to bump version file provided
-      run: ${{ github.action_path }}/bump_version.sh ${{inputs.version_file}}
+      run: |
+        ${{ github.action_path }}/bump_version.sh ${{inputs.version_file}} ${{inputs.version_to_bump}}
       shell: bash
+      
     - id: bump-version
-      run: echo "::set-output name=new_version::$(cat ${{inputs.version_file}})"
+      run: |
+        
+        if [ ${{inputs.version_file}} != 'false'  ]; then
+          version_bumped=$(cat ${{inputs.version_file}} ) 
+          echo "new_version=${version_bumped}" >> $GITHUB_OUTPUT
+        else
+          version_bumped=$(cat ./suggested_version.txt)
+          echo "new_version=${version_bumped}" >> $GITHUB_OUTPUT
+        fi  
       shell: bash
      
