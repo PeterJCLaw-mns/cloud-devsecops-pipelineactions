@@ -5,7 +5,7 @@ name: GitHub Actions Version Updater
 on:
    schedule:
     # Automatically run on 15th of every month.
-   - cron: '0 0 15 * *'
+   - cron: '0 0 1,15 * *'
 
 jobs:
   build:
