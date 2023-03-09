@@ -1,0 +1,100 @@
+ame: 'BMC Helix Integration & CR creation'
+description: 'Automated change using BMC tools'
+
+inputs:
+
+  helix_username:
+    required: true
+  helix_password:
+    required: true
+    
+  remedy_url:
+    required: false
+    default: 'https://mnscorp-rod.onbmc.com'  
+  template_id:
+    required: false
+    default: 'IDGIOLUYEBCY1ARRDD44RQDFKR71ZN'
+    
+  change_request_id:
+    required: true 
+  update_status:
+    required: true
+  update_reason:
+    required: true
+    default: 'updating CR'
+  
+runs:
+  using: "composite"
+  steps:
+#     - name: Get BMC Remedy API token
+#       id: bmcremedylogin
+#       uses: fjogeleit/http-request-action@master
+#       with:
+#         url: "${{inputs.remedy_url}}/api/jwt/login"  
+#         method: 'POST'
+#         contentType: application/x-www-form-urlencoded     
+#         data: '{"username": "${{inputs.bmc_username}}", "password": "${{ inputs.bmc_password }}"}'
+     
+#     - name: Assign API response and Manipulate Input Product name
+#       run: |
+#          echo "TOKEN=${{ steps.bmcremedylogin.outputs.response }}" >> $GITHUB_ENV
+#       shell: bash
+
+  - name: Get BMC Remedy API token
+    id: bmcremedylogin
+    uses: fjogeleit/http-request-action@master
+    with:  
+      url: "${{inputs.remedy_url}}/api/jwt/login"
+      method: 'POST'
+      contentType: application/x-www-form-urlencoded     
+      data: '{"username": "${{inputs.bmc_username}}", "password": "${{ inputs.bmc_password }}"}'
+      
+  - name: Assign API response
+    run: |
+       echo "TOKEN=${{ steps.bmcremedylogin.outputs.response }}" >> $GITHUB_ENV
+    shell: bash   
+    
+  - name: Get CR status 
+    id: bmcremedycrstatus
+    run: |
+      curl -X GET "https://mnscorp-rod.onbmc.com/api/arsys/v1/entry/CHG:ChangeInterface?q='Infrastructure%20Change%20ID'=\"${{ inputs.change_request_id }}\"&fields=values(Change%20Request%20Status)" \
+      -H "Authorization: AR-JWT ${{ env.TOKEN }}" \
+      -H "Content-Type: application/json" > $HOME/response.json
+      echo "CR_STATUS=$(jq -r '.entries[0].values["Change Request Status"]' $HOME/response.json)" >> $GITHUB_ENV
+    shell: bash    
+    
+  - name: Validate CR status
+    run: |
+        echo "${{ env.CR_STATUS }}"
+        if [[ "${{ env.CR_STATUS }}" == "Scheduled" ]]
+          then
+              echo "Proceed with the deployment"
+        elif [[ "${{ env.CR_STATUS }}" == "Completed" ]]
+          then
+              echo "Proceed with the deployment, provided if it is a combined CR otherwise raise a new CR"
+        elif [[ "${{ env.CR_STATUS }}" == "Implementation In Progress" ]]
+          then
+              echo "Looks like you have already attemped for a deployment, Proceed with caution!!"              
+        else
+              echo "Please get the CR approval before deploying to Production"
+              exit 1
+          fi
+    shell: bash      
+
+  - name: Update CR for Implementation in Progress
+    uses: fjogeleit/http-request-action@master
+    with:
+      url: 'https://mnscorp.jitterbit.eu/mnscorp-ca/gitHubAutoCrProd/updatecr'        
+      method: 'POST'
+      timeout: 80000
+      username: ${{inputs.helix_username}}
+      password: ${{ inputs.helix_password }}
+      data: >-
+        {
+          "change_request_id": "${{ inputs.change_request_id }}",
+          "status": "${{ inputs.update_status }}",
+          "status_reason": "${{ inputs.update_reason }}"
+        }
+
+
+     
