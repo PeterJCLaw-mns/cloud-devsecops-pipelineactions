@@ -41,7 +41,7 @@ inputs:
     required: true
   remedy_url:
     required: false
-    default: 'https://mnscorp-rod.onbmc.com'
+    default: 'https://mnscorp-rod-restapi.onbmc.com'
   helix_username:
     required: true
   helix_password:
