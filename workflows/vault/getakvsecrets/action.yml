@@ -43,11 +43,12 @@ runs:
            then
               echo "Secret $v exists"
               keyValue=$(az keyvault secret show --name "$v" --vault-name "${{inputs.keyvault}}" --query "value" -o tsv)
-              echo "::add-mask::${keyValue}"        
+              #echo "::add-mask::${keyValue}"        
            else 
               echo "Secret $v Does not exist"
            fi
            
+           echo "masking the secret $v"
            while read -r line;
            do
             echo "::add-mask::${line}"
@@ -56,48 +57,15 @@ runs:
            echo "$v<<EOF" >> $GITHUB_ENV
            echo "$keyValue" >> $GITHUB_ENV
            echo "EOF" >> $GITHUB_ENV
+           
          done
+         
          az logout
          az cache purge
          az account clear
+         
       shell: bash
       
       
-#     - name: logout of Azure
-#       run: |
-#         az logout
-#         az cache purge
-#         az account clear
-        
-        
-#     - uses: azure/CLI@v1
-#       id: GetAKVSecrets
-#       with:  
-#         azcliversion: 2.30.0
-#         inlineScript: |
-#             az login --service-principal -u ${{ inputs.sp_client_id }} -p ${{ inputs.sp_client_secret }} --tenant ${{ inputs.tenent_id }}
-#             az account set --subscription '${{ inputs.subscription_id }}'
-
-#             IFS=, read -ra values <<< "${{inputs.secret_keys}}"
-#             for v in "${values[@]}"
-#             do
-#               keyValue=''
-#               if az keyvault secret list --vault-name "${{inputs.keyvault}}" --query "[].name" | grep $v
-#               then
-#                   echo "Secret $v exists"
-
-#                   keyValue=$(az keyvault secret show --name "$v" --vault-name "${{inputs.keyvault}}" --query "value" -o tsv)
-
-#                   echo "::add-mask::${keyValue}"        
-         
-#               else 
-#                echo "Secret $v Does not exist"
-#               fi
-
-#               echo "$v<<EOF" >> $GITHUB_ENV
-#               echo "$keyValue" >> $GITHUB_ENV
-#               echo "EOF" >> $GITHUB_ENV
-    
-#             done
 
    
