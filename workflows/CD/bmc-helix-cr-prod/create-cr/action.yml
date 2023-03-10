@@ -44,7 +44,7 @@ inputs:
     required: true
   remedy_url:
     required: false
-    default: 'https://mnscorp-rod.onbmc.com'  
+    default: 'https://mnscorp-rod-restapi.onbmc.com'  
   template_id:
     required: true
     
