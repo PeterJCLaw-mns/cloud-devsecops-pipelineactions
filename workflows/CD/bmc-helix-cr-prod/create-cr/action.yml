@@ -133,7 +133,7 @@ runs:
     id: bmcremedyprodcat
     run: |
       echo "product name" "${{ env.PROD_NAME_WITHOUT_SPACE }}"
-      curl -X GET "https://mnscorp-rod.onbmc.com/api/arsys/v1/entry/PCT:Product%20Catalog?q=('Status'=\"Enabled\"%20AND%20'Product%20Name'%20=\"${{ env.PROD_NAME_WITHOUT_SPACE }}\")&fields=values(Product%20Categorization%20Tier%201,Product%20Categorization%20Tier%202,Product%20Categorization%20Tier%203,Product%20Name,Manufacturer)" \
+      curl -X GET "https://mnscorp-rod-restapi.onbmc.com/api/arsys/v1/entry/PCT:Product%20Catalog?q=('Status'=\"Enabled\"%20AND%20'Product%20Name'%20=\"${{ env.PROD_NAME_WITHOUT_SPACE }}\")&fields=values(Product%20Categorization%20Tier%201,Product%20Categorization%20Tier%202,Product%20Categorization%20Tier%203,Product%20Name,Manufacturer)" \
       -H "Authorization: AR-JWT ${{ env.TOKEN }}" \
       -H "Content-Type: application/json" > $HOME/response.json
       echo "PROD_CAT1=$(jq -r '.entries[0].values["Product Categorization Tier 1"]' $HOME/response.json)" >> $GITHUB_ENV
