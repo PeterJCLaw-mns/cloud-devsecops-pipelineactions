@@ -10,7 +10,7 @@ inputs:
     
   remedy_url:
     required: false
-    default: 'https://mnscorp-rod.onbmc.com'  
+    default: 'https://mnscorp-rod-restapi.onbmc.com'  
   template_id:
     required: false
     default: 'IDGIOLUYEBCY1ARRDD44RQDFKR71ZN'
@@ -26,19 +26,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-#     - name: Get BMC Remedy API token
-#       id: bmcremedylogin
-#       uses: fjogeleit/http-request-action@master
-#       with:
-#         url: "${{inputs.remedy_url}}/api/jwt/login"  
-#         method: 'POST'
-#         contentType: application/x-www-form-urlencoded     
-#         data: '{"username": "${{inputs.bmc_username}}", "password": "${{ inputs.bmc_password }}"}'
-     
-#     - name: Assign API response and Manipulate Input Product name
-#       run: |
-#          echo "TOKEN=${{ steps.bmcremedylogin.outputs.response }}" >> $GITHUB_ENV
-#       shell: bash
 
   - name: Get BMC Remedy API token
     id: bmcremedylogin
@@ -57,7 +44,7 @@ runs:
   - name: Get CR status 
     id: bmcremedycrstatus
     run: |
-      curl -X GET "https://mnscorp-rod.onbmc.com/api/arsys/v1/entry/CHG:ChangeInterface?q='Infrastructure%20Change%20ID'=\"${{ inputs.change_request_id }}\"&fields=values(Change%20Request%20Status)" \
+      curl -X GET "https://mnscorp-rod-restapi.onbmc.com/api/arsys/v1/entry/CHG:ChangeInterface?q='Infrastructure%20Change%20ID'=\"${{ inputs.change_request_id }}\"&fields=values(Change%20Request%20Status)" \
       -H "Authorization: AR-JWT ${{ env.TOKEN }}" \
       -H "Content-Type: application/json" > $HOME/response.json
       echo "CR_STATUS=$(jq -r '.entries[0].values["Change Request Status"]' $HOME/response.json)" >> $GITHUB_ENV
