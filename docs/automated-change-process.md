@@ -1,4 +1,11 @@
-# Automated Change Request
+---
+id: automated-cr
+title: Lean Change - Risk & Impact
+# prettier-ignore
+description: Lean Change Management - Automated Change Request
+---
+
+# Lean Change Management - Automated Change Request
 
 As part of the journey towards Continuous Deployment, we have created Automated CR (Change Request) composite actions using which you will be able to create CR, check conflicts through pipeline itself rather than manually raising the CR in BMC Remedy. 
 
