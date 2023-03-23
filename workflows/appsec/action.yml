@@ -71,7 +71,7 @@ runs:
     shell: bash
     
   - name: Install JAVA 
-    uses: actions/setup-java@v2
+    uses: actions/setup-java@v3.9.0
     if: ${{inputs.jdk_version}}
     with:
       distribution: 'adopt' # See 'Supported distributions' for available options
@@ -79,7 +79,7 @@ runs:
    
   - name: Install Node
     if: ${{inputs.node_version}}
-    uses: actions/setup-node@v3
+    uses: actions/setup-node@v3.5.1
     with:
       node-version: ${{inputs.node_version}}
       
@@ -105,7 +105,7 @@ runs:
     if: ${{inputs.run_dependency_scan == 'true' &&  inputs.dependency_scan_token }}
   
   - name: Snyk SCA Scanning
-    uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/appsec/snyk@v1.1.1
+    uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/appsec/snyk@v1.2.20
     with:      
       dependency_scan_token: ${{ inputs.dependency_scan_token }}
       dependency_scan_arguments: ${{ inputs.dependency_scan_arguments }}
@@ -150,7 +150,7 @@ runs:
     shell: bash
     if: ${{inputs.run_container_scan == 'true' }}
   - name: Run Container Scan for Repostiory
-    uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/appsec/prisma@v1.1.1
+    uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/appsec/prisma@v1.2.20
     with: 
       container_scan_user: ${{ inputs.container_scan_user }}
       container_scan_password: ${{ inputs.container_scan_password }}
@@ -206,7 +206,7 @@ runs:
     if: ${{inputs.run_sast_scan == 'true' }}
     
   - name: Fortify Scan Create source Zip upload to FOD for Scanning
-    uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/appsec/fortify@v1.1.1
+    uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/appsec/fortify@v1.2.20
     with:
       sast_release_id: ${{inputs.sast_release_id }}
       sast_api_key: ${{ inputs.sast_api_key}}

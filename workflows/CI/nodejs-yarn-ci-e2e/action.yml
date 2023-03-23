@@ -44,11 +44,11 @@ runs:
     
     - run: echo Hello, You are Executing Composite action to Execute Build
       shell: bash
-    - name: Checkout
-      uses: actions/checkout@v2
-    - uses: c-hive/gha-yarn-cache@v2.1.0
+#     - name: Checkout
+#       uses: actions/checkout@v2
+    - uses: c-hive/gha-yarn-cache@v2
     - name: Setup NodeJs
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3.5.1
       with:
         node-version: ${{ inputs.build_tool_version }}
     - name: Install JS dependencies
@@ -104,7 +104,7 @@ runs:
 #           restore-keys: |
 #             ${{runner.os}}-yarn
 #       - name: Setup NodeJs
-#         uses: actions/setup-node@v2
+#         uses: actions/setup-node@v3.5.1
 #         with:
 #           node-version: ${{ env.NODE_VERSION }}
 #       - name: Install JS dependencies
@@ -137,7 +137,7 @@ runs:
 #       - name: Checkout
 #         uses: actions/checkout@v2
 #       - name: Setup NodeJs
-#         uses: actions/setup-node@v2
+#         uses: actions/setup-node@v3.5.1
 #         with:
 #           node-version: ${{ env.NODE_VERSION }}
 #       - name: Cache Yarn

@@ -47,7 +47,7 @@ runs:
   using: "composite"
   steps:
     - name: Install JAVA 11
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v3.9.0
       with:
         distribution: 'adopt' # See 'Supported distributions' for available options
         java-version: '11'  
@@ -76,8 +76,8 @@ runs:
     - name: configure HELM V3
       run: |
          tar -zxvf /tmp/helm/helm-v3.2.0-linux-amd64.tar.gz --directory /tmp/helm \
-         && mv /tmp/helm/linux-amd64/helm /usr/local/bin/helm \
-         && rm -rf /tmp/helm/
+         && sudo mv /tmp/helm/linux-amd64/helm /usr/local/bin/helm \
+         && sudo rm -rf /tmp/helm/
       shell: bash
       if: ${{ inputs.helm_version == '3' }}
       
@@ -90,40 +90,61 @@ runs:
     - name: configure HELM V2
       run: |
          tar -zxvf /tmp/helm/helm-v2.8.2-linux-amd64.tar.gz --directory /tmp/helm \
-         && mv /tmp/helm/linux-amd64/helm /usr/local/bin/helm \
-         && rm -rf /tmp/helm/
+         && sudo mv /tmp/helm/linux-amd64/helm /usr/local/bin/helm \
+         && sudo rm -rf /tmp/helm/
       shell: bash
       if: ${{ inputs.helm_version == '2' }}
       
     
     - name: k8s-set-context
-      uses: Azure/k8s-set-context@v1
+      uses: Azure/k8s-set-context@v3.0
       with:
         kubeconfig: ${{ inputs.kube_config }}     
 
-    
         
     - name: AKS Deploy and create Namespace Dry Run
       run: |
         cd ./${{ inputs.helm_chart_path }}
-        ls -lart
-        helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}' --create-namespace --dry-run --debug
-        echo ${{env.image}}
+        
+        if [ -z ${{inputs.image_name}} ]; then
+          echo "running Dry Run No image name and tag provided using values set in helm arguments" 
+          helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}' --create-namespace --dry-run --debug
+        else
+          echo " Running Dry Run  Using full image name and tag provided as inputs "
+          helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' --set 'image.repository=${{ inputs.image_name }}:${{inputs.image_tag}}' --set 'image.name=${{ inputs.image_name }}' --set 'image.tag=${{inputs.image_tag}}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}' --create-namespace --dry-run --debug
+        fi
+       
       shell: bash
       if: ${{ inputs.dry_run == 'true' }}
+      
+      
            
     - name: AKS Deploy and create Namespace
       run: |
         cd ./${{ inputs.helm_chart_path }}
-        helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}' --create-namespace --atomic
-        echo ${{env.image}}
+        
+        if [ -z ${{inputs.image_name}} ]; then
+          echo "No image name and tag provided using values set in helm arguments" 
+          helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}' --create-namespace --atomic
+        else
+          echo " Using full image name and tag provided as inputs "
+          helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' --set 'image.repository=${{ inputs.image_name }}:${{inputs.image_tag}}' --set 'image.name=${{ inputs.image_name }}' --set 'image.tag=${{inputs.image_tag}}'  ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}' --create-namespace --atomic
+        fi
+       
       shell: bash
       if: ${{ inputs.create_namespace == 'true'}}
       
     - name: AKS Deploy basic
       run: |
         cd ./${{ inputs.helm_chart_path }}
-        helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}'
-        echo ${{env.image}}
+        
+        if [ -z ${{inputs.image_name}} ]; then
+          echo "No image name and tag provided using values set in helm arguments" 
+          helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}'
+        else
+          echo " Using full image name and tag provided as inputs "
+          helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' --set 'image.repository=${{ inputs.image_name }}:${{inputs.image_tag}}' --set 'image.name=${{ inputs.image_name }}' --set 'image.tag=${{inputs.image_tag}}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}'
+        fi
+        
       shell: bash
       if: ${{ inputs.create_namespace != 'true' && inputs.dry_run != 'true' }}  

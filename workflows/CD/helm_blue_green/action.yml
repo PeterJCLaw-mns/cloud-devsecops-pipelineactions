@@ -1,0 +1,304 @@
+name: 'Helm-Deployment Actions'
+description: 'Deployment using helm charts'
+
+inputs:
+  
+  environment:
+    required: true
+  application_release_name:
+    required: true
+  release_version:
+    required: false
+  kube_config:
+    required: false
+  helm_version:
+    required: false
+    default: 3
+  helm_chart_path:
+    required: false
+  helm_values_file:
+    required: false
+  helm_values_file_path:
+    required: false
+  image_name:
+    required: false
+  image_tag:
+    required: false
+  cluster_namespace:
+    required: false
+  create_namespace:
+    required: false
+  helm_argument: 
+    required: false
+  dry_run:
+    required: false
+    default: false
+  is_atomic:
+    required: false
+    default: false
+  deployment_script_path:
+    required: false
+  deployment_script_name:
+    required: false
+  release_strategy:
+    required: false
+    default: standard
+  enable_canary:
+    required: false
+  canary_weightage:
+    required: false
+    
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install JAVA 11
+      uses: actions/setup-java@v3.9.0
+      with:
+        distribution: 'adopt' # See 'Supported distributions' for available options
+        java-version: '11'  
+        
+    - name: Install YQ
+      uses: carlosperate/download-file-action@v1
+      with:
+        file-url: 'https://github.com/mikefarah/yq/releases/download/v4.19.1/yq_linux_386.tar.gz'
+        file-name: 'yq-linux.tar.gz'
+        location: './yq_install'
+    - name: configure YQ
+      run: |
+        pwd
+        tar -xzf ./yq_install/yq-linux.tar.gz --directory ./yq_install
+        mv $GITHUB_WORKSPACE/yq_install/yq_linux_386 $GITHUB_WORKSPACE/yq_install/yq
+        echo "$GITHUB_WORKSPACE/yq_install" >> $GITHUB_PATH
+      shell: bash     
+        
+    - name: Install HELM V3
+      if: ${{ inputs.helm_version == '3' }}
+      uses: carlosperate/download-file-action@v1
+      with:
+        file-url: 'https://get.helm.sh/helm-v3.2.0-linux-amd64.tar.gz'
+        location: /tmp/helm
+    - name: configure HELM V3
+      run: |
+         tar -zxvf /tmp/helm/helm-v3.2.0-linux-amd64.tar.gz --directory /tmp/helm \
+         && sudo mv /tmp/helm/linux-amd64/helm /usr/local/bin/helm \
+         && sudo rm -rf /tmp/helm/
+      shell: bash
+      if: ${{ inputs.helm_version == '3' }}
+      
+    - name: Install HELM V2
+      if: ${{ inputs.helm_version == '2' }}
+      uses: carlosperate/download-file-action@v1
+      with:
+        file-url: 'https://get.helm.sh/helm-v2.8.2-linux-amd64.tar.gz'
+        location: /tmp/helm
+    - name: configure HELM V2
+      run: |
+         tar -zxvf /tmp/helm/helm-v2.8.2-linux-amd64.tar.gz --directory /tmp/helm \
+         && sudo mv /tmp/helm/linux-amd64/helm /usr/local/bin/helm \
+         && sudo rm -rf /tmp/helm/
+      shell: bash
+      if: ${{ inputs.helm_version == '2' }}
+      
+    - name: k8s-set-context
+      uses: Azure/k8s-set-context@v3.0
+      with:
+        kubeconfig: ${{ inputs.kube_config }}     
+
+ ##########################33  HELM upgrade steps #######################
+ 
+    - name: AKS Deploy and create Namespace Dry Run
+      run: |
+        cd ./${{ inputs.helm_chart_path }}
+        ls -lart
+        helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}' --create-namespace --dry-run --debug
+        echo ${{env.image}}
+      shell: bash
+      if: ${{ inputs.dry_run == 'true' }}
+           
+    - name: AKS Deploy and create Namespace
+      run: |
+        cd ./${{ inputs.helm_chart_path }}
+        helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}' --create-namespace --atomic
+        echo ${{env.image}}
+      shell: bash
+      if: ${{ inputs.create_namespace == 'true' && inputs.release_strategy == 'standard'}}
+      
+    - name: AKS Deploy basic
+      run: |
+        cd ./${{ inputs.helm_chart_path }}
+        helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}'
+        echo ${{env.image}}
+      shell: bash
+      if: ${{ inputs.create_namespace != 'true' && inputs.dry_run != 'true' && inputs.release_strategy == 'standard' }}  
+   
+   ################## BLUE GREEN DEPLOYMENT #######################
+      
+    - name: AKS BlueGreen Deploy - deploy BLUE instance
+      run: |
+        deployment_status_blue=""
+        echo "Checking if Blue Release exist.."
+        deployment_status_blue=`helm ls -q --filter "${{inputs.application_release_name}}-blue" --namespace ${{inputs.cluster_namespace}}`
+        echo $deployment_status_blue
+        echo "Proceeding the deployment.."
+        if [ -z "$deployment_status_blue" ]; then
+            echo "Starting a new deployment as blue release..!"
+            cd ./${{ inputs.helm_chart_path }}
+            helm upgrade --install ${{inputs.application_release_name}}-blue  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} --set image.repository=${{inputs.image_name}}:${{inputs.image_tag}} --create-namespace '--namespace=${{inputs.cluster_namespace}}'
+        else
+            echo "Proceeding with the Green deployment!"
+            deployment_status_green=""
+            deployment_status_green=`helm ls -q --filter "${{inputs.application_release_name}}-green" --namespace ${{inputs.cluster_namespace}}`
+            echo $deployment_status_green
+            echo "Starting Green Release deployment..."
+            if [ ${{inputs.enable_canary}} == true ]; then
+                echo "Canary is Enabled."
+                cd ./${{ inputs.helm_chart_path }}
+                helm upgrade --install ${{inputs.application_release_name}}-green  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} --set image.repository=${{inputs.image_name}}:${{inputs.image_tag}} --set-string ingress.annotations.'nginx\.ingress\.kubernetes\.io/canary'="true" --set-string ingress.annotations.'nginx\.ingress\.kubernetes\.io/canary-weight'="${{inputs.canary_weightage}}" '--namespace=${{inputs.cluster_namespace}}'
+            else
+                cd ./${{ inputs.helm_chart_path }}
+                helm upgrade --install ${{inputs.application_release_name}}-green  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} --set image.repository=${{inputs.image_name}}:${{inputs.image_tag}} '--namespace=${{inputs.cluster_namespace}}'
+            fi
+        fi
+        echo "DEPLOYED IMAGE: ${{inputs.image_name}}"
+        echo "DEPLOYED IMAGE TAG: ${{inputs.image_tag}}"
+        
+      shell: bash
+      if: ${{ inputs.dry_run != 'true' && inputs.release_strategy == 'bluegreen' }}
+      
+      
+      #############   GREEN TO BLUE STRATEGY #####################
+      
+    - name: AKS BlueGreen Deploy - Green to Blue
+      run: |
+        deployment_status_blue=""
+        deployment_status_green=""
+        deployment_status_blue=`helm ls -q --filter "${{inputs.application_release_name}}-blue" --namespace ${{inputs.cluster_namespace}}`
+        deployment_status_green=`helm ls -q --filter "${{inputs.application_release_name}}-green" --namespace ${{inputs.cluster_namespace}}`
+        
+        # Checking if Green deployment exist.
+        if [ -z "$deployment_status_green" ]; then
+            echo "Error - No green release exists. Aborting the deployment."
+            exit 3 
+        else
+            echo "Green Release: $deployment_status_green"
+            if [ -z "$deployment_status_blue" ]; then
+               echo "Error - No blue release exists. Aborting the deployment."
+               exit 4
+            else
+               echo "Blue Release: $deployment_status_blue"
+               echo "Checking the Green Deployment Details..!"
+               docker_img_from_green="`kubectl get deployment --namespace ${{inputs.cluster_namespace}} -l app.kubernetes.io/instance=${{inputs.application_release_name}}-green -o=jsonpath={.items[0].spec.template.spec.containers[0].image}`"
+               docker_tag_from_green=`cut -d ':' -f2 <<<$docker_img_from_green`
+               echo -e "Image Used in Green Release: \x1B[0;92m  $docker_img_from_green"
+               echo -e "Tag of the docker image from Green Release: \x1B[0;92m  $docker_tag_from_green"
+               if [[ "$docker_tag_from_green" != "${{inputs.image_tag}}" ]]; then
+                 echo -e "\033[31m The provided Image/Tag does not match with the image from the Green Deployment.! Please Verify"
+                 exit 5
+               else
+                 cd ./${{ inputs.helm_chart_path }}
+                 helm upgrade --install ${{inputs.application_release_name}}-blue  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} --set image.repository=$docker_img_from_green '--namespace=${{inputs.cluster_namespace}}'
+                 echo "Upgraded Blue release from Green."
+                 helm uninstall "${{inputs.application_release_name}}-green" --namespace=${{inputs.cluster_namespace}}
+                 echo "Deleted Green release."
+               fi
+            fi
+        fi
+        
+      shell: bash
+      if: ${{ inputs.dry_run != 'true' && inputs.release_strategy == 'greentoblue' }} 
+      
+      
+      #############   OVERRIDE BLUE STRATEGY #####################
+      
+    - name: AKS BlueGreen Deploy - Override Blue
+      run: |
+        deployment_status_blue=""
+        deployment_status_blue=`helm ls -q --filter "${{inputs.application_release_name}}-blue" --namespace ${{inputs.cluster_namespace}}`
+        if [ -z "$deployment_status_green" ]; then
+            echo "Error - No Blue release exists. Aborting the deployment."
+            exit 6 
+        else
+            echo "Deploying directly to Blue slot."
+            cd ./${{ inputs.helm_chart_path }}
+            helm upgrade --install ${{inputs.application_release_name}}-blue  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} --set image.repository=${{inputs.image_name}}:${{inputs.image_tag}} '--namespace=${{inputs.cluster_namespace}}'
+        fi
+        
+      shell: bash
+      if: ${{ inputs.dry_run != 'true' && inputs.release_strategy == 'overrideblue' }}  
+      
+      #############   ROLLBACK BLUE #####################
+      
+    - name: AKS BlueGreen Deploy - ROLLBACK BLUE
+      run: |
+        deployment_status_blue=""
+        deployment_status_blue=`helm ls -q --filter "${{inputs.application_release_name}}-blue" --namespace ${{inputs.cluster_namespace}}`
+        if [ -z "$deployment_status_blue" ]; then
+            echo "Error - No Blue release exists. Aborting the deployment."
+            exit 6 
+        else
+            echo "List of Blue release revisions."
+            helm history "${{inputs.application_release_name}}-blue" --namespace=${{inputs.cluster_namespace}}
+            echo "Rolling back to the previous revision."
+            helm rollback "${{inputs.application_release_name}}-blue" --namespace=${{inputs.cluster_namespace}}
+        fi
+        
+      shell: bash
+      if: ${{ inputs.dry_run != 'true' && inputs.release_strategy == 'rollbackblue' }}
+      
+      #############   ROLLBACK GREEN #####################
+      
+    - name: AKS BlueGreen Deploy - ROLLBACK GREEN
+      run: |
+        deployment_status_green=""
+        deployment_status_green=`helm ls -q --filter "${{inputs.application_release_name}}-green" --namespace ${{inputs.cluster_namespace}}`
+        if [ -z "$deployment_status_green" ]; then
+            echo "Error - No Green release exists. Aborting the deployment."
+            exit 6 
+        else
+            echo "List of Green release revisions."
+            helm history "${{inputs.application_release_name}}-green" --namespace=${{inputs.cluster_namespace}}
+            echo "Rolling back to the previous revision."
+            helm rollback "${{inputs.application_release_name}}-green" --namespace=${{inputs.cluster_namespace}}
+        fi
+        
+      shell: bash
+      if: ${{ inputs.dry_run != 'true' && inputs.release_strategy == 'rollbackgreen' }}
+           
+  #############   ROLLBACK STANDARD #####################
+      
+    - name: AKS BlueGreen Deploy - ROLLBACK (STANDARD RELEASE STRATEGY)
+      run: |
+        deployment_status=""
+        deployment_status=`helm ls -q --filter "${{inputs.application_release_name}}" --namespace ${{inputs.cluster_namespace}}`
+        if [ -z "$deployment_status" ]; then
+            echo "Error - No release exists. Aborting the deployment."
+            exit 6 
+        else
+            echo "List of release revisions."
+            helm history "${{inputs.application_release_name}}" --namespace=${{inputs.cluster_namespace}}
+            echo "Rolling back to the previous revision."
+            helm rollback "${{inputs.application_release_name}}" --namespace=${{inputs.cluster_namespace}}
+        fi
+        
+      shell: bash
+      if: ${{ inputs.dry_run != 'true' && inputs.release_strategy == 'rollback' }}
+      
+      
+       ############# DELETE GREEN #####################
+      
+    - name: AKS BlueGreen Deploy - DELETE GREEN
+      run: |
+        deployment_status_green=""
+        deployment_status_green=`helm ls -q --filter "${{inputs.application_release_name}}-green" --namespace ${{inputs.cluster_namespace}}`
+        if [ -z "$deployment_status_green" ]; then
+            echo "Error - No Green release exists. Aborting the deployment."
+            exit 6 
+        else
+            echo "Removing the Green release."
+            helm uninstall "${{inputs.application_release_name}}-green" --namespace=${{inputs.cluster_namespace}}
+        fi
+        
+      shell: bash
+      if: ${{ inputs.dry_run != 'true' && inputs.release_strategy == 'deletegreen' }}
+      

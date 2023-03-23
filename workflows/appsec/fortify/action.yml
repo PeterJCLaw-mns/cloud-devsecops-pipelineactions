@@ -31,7 +31,7 @@ runs:
       
         
     - name: Download Fortify on Demand Universal CI Tool
-      uses: fortify/gha-setup-fod-uploader@v1
+      uses: fortify/gha-setup-fod-uploader@v1.1.3
             
     - name: Download fortify executable and run scan 
       run: |

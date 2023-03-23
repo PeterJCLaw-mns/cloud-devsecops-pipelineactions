@@ -79,7 +79,7 @@ jobs:
              pull_branch=$(jq --raw-output .pull_request.head.ref "$GITHUB_EVENT_PATH")
              echo "Pull request Branch: $pull_branch"
              echo "::set-output name=pull_branch::$pull_branch"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3.2.0
         with:
           ref: ${{ steps.pull.outputs.pull_branch}}
       - run: |
@@ -134,7 +134,7 @@ jobs:
     needs: [pre-work-setup]
     steps:
     - name: ============ Checkout the repository Code ==========
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3.2.0
       with:
         repository: DigitalInnovation/Cloud-DevSecOps-Pipeline-Java
         token: ${{ secrets.SAML_GITHUB_TOKEN }}
@@ -199,7 +199,7 @@ jobs:
     continue-on-error: true
     steps:
     - name: ============ Checkout the repository Code ========== same as git-repo (get)
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3.2.0
       with:
         repository: DigitalInnovation/Cloud-DevSecOps-Pipeline-Java
         token: ${{ secrets.SAML_GITHUB_TOKEN }}
@@ -230,7 +230,7 @@ jobs:
 #     runs-on: ubuntu-latest
 #     needs: [pre-work-setup]
 #     steps:
-#     - uses: actions/checkout@v3
+#     - uses: actions/checkout@v3.2.0
 #     - name: =========  Build and push image to Container Registry. ===========
 #  # you can also add this as part of the build workflow by setting the build_and_push_container_image: true
 #       uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CI/push_image@maven-pull-branch
@@ -263,7 +263,7 @@ jobs:
     continue-on-error: true
     environment: Non-prod
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3.2.0
       with:
         repository: DigitalInnovation/Cloud-DevSecOps-Pipeline-Java
         token: ${{ secrets.SAML_GITHUB_TOKEN }}
@@ -310,7 +310,7 @@ jobs:
     continue-on-error: true
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.2.0
         with:
           repository: DigitalInnovation/Cloud-DevSecOps-Pipeline-Java
           token: ${{ secrets.SAML_GITHUB_TOKEN }}
@@ -351,7 +351,7 @@ jobs:
     needs: [ pre-work-setup, Run_appsec_scans ]  # needs pre-work if you are referencing the output
     environment: Non-prod
     steps:  
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3.2.0
       with:
         repository: DigitalInnovation/Cloud-DevSecOps-Pipeline-Java
         token: ${{ secrets.SAML_GITHUB_TOKEN }}
