@@ -31,7 +31,7 @@ Snippet to be added **before** Production deployment step:
 
 ```
 {% raw %}
-      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr@branch-bmc-helix-action
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr-qa@latest
       with:
         action: "update"
         bmc_username: GitHub.APIUser
@@ -47,7 +47,7 @@ Snippet to be added **after** Production deployment step, also add a condition t
 
 ```
 {% raw %}
-      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr@branch-bmc-helix-action
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr-qa@latest
       with:
         action: "update"
         bmc_username: GitHub.APIUser
