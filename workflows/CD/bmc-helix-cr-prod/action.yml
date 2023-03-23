@@ -1,0 +1,114 @@
+name: 'BMC Helix Integration & CR creation'
+description: 'Automated change using BMC tools'
+
+inputs:
+  action:
+    required: true
+    default: update
+    
+  portfolio:
+    required: true
+  start_date:
+    description: 'Change Implementation Start Date (YYYY-MM-DDTHH:MM:SS)'
+    required: true
+  end_date:
+    description: 'Change Implementation End Date (YYYY-MM-DDTHH:MM:SS)'
+    required: true
+  app_name:
+    description: 'Application Name'
+    required: true
+  change_description:
+    description: 'Change Description'
+    required: true
+  change_category:
+    description: 'Change Category'
+    required: true
+  outage_required:
+    description: 'Outage Required?'
+    required: true
+  product_four_wall:
+    description: 'Product 4 Wall Change?'
+    required: true
+  business_impact:
+    description: 'Business Impact'
+    required: true
+  risk_impact:
+    description: 'Risk and Impact assessment agreement'
+    required: true
+  bmc_username:
+    required: true
+  bmc_password:
+    required: true
+  remedy_url:
+    required: false
+    default: 'https://mnscorp-rod-restapi.onbmc.com'
+  helix_username:
+    required: true
+  helix_password:
+    required: true
+    
+  template_id:
+    required: false
+    default: 'IDGIOLUYEBCY1ARRDD44RQDFKR71ZN'
+ 
+  change_request_id:
+    required: false
+  update_status:
+    required: false
+  update_reason:
+    required: false
+    default: 'updating CR'  
+    
+runs:
+  using: "composite"
+  steps:
+    - name: Create new CR 
+      id: create-cr
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr-prod/create-cr@branch-bmc-helix-action
+      with:
+        portfolio: ${{inputs.portfolio}}
+        start_date: ${{inputs.start_date}}
+        end_date: ${{inputs.end_date}}
+        app_name: ${{inputs.app_name}}
+        change_description: ${{inputs.change_description}}
+        change_category: ${{inputs.change_category}}
+        outage_required: ${{inputs.outage_required}}
+        product_four_wall: ${{inputs.product_four_wall}}
+        business_impact: ${{inputs.business_impact}}
+        risk_impact: ${{inputs.risk_impact}}
+        bmc_username: ${{inputs.bmc_username}}
+        bmc_password: ${{inputs.bmc_password}}
+        helix_username: ${{inputs.helix_username}}
+        helix_password: ${{inputs.helix_password}}
+        remedy_url: ${{inputs.remedy_url}}
+        template_id: ${{inputs.template_id}}
+      if: ${{ inputs.action == 'create' }}
+      
+     
+    - name: Update CR 
+      id: update-cr
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr-prod/update-cr@branch-bmc-helix-action
+      with:
+#         portfolio: ${{inputs.portfolio}}
+#         start_date: ${{inputs.}}
+#         end_date: ${{inputs.start_date}}
+#         app_name: ${{inputs.app_name}}
+#         change_description: ${{inputs.change_description}}
+#         change_category: ${{inputs.change_category}}
+#         outage_required: ${{inputs.outage_required}}
+#         product_four_wall: ${{inputs.product_four_wall}}
+#         business_impact: ${{inputs.business_impact}}
+#         risk_impact: ${{inputs.risk_impact}}
+        bmc_username: ${{inputs.bmc_username}}
+        bmc_password: ${{inputs.bmc_password}}
+        helix_username: ${{inputs.helix_username}}
+        helix_password: ${{inputs.helix_password}}
+        remedy_url: ${{inputs.remedy_url}}
+        template_id: ${{inputs.template_id}}
+        change_request_id: ${{inputs.change_request_id}}
+        update_status: ${{inputs.update_status}}
+        update_reason: ${{inputs.update_reason}}
+      if: ${{ inputs.action == 'update' }}
+  
+  
+
