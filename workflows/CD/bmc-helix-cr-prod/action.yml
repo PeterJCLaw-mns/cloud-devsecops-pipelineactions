@@ -64,7 +64,7 @@ runs:
   steps:
     - name: Create new CR 
       id: create-cr
-      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr-prod/create-cr@v1.2.23
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr-prod/create-cr@v1.2.24
       with:
         portfolio: ${{inputs.portfolio}}
         start_date: ${{inputs.start_date}}
@@ -87,7 +87,7 @@ runs:
      
     - name: Update CR 
       id: update-cr
-      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr-prod/update-cr@v1.2.23
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr-prod/update-cr@v1.2.24
       with:
 #         portfolio: ${{inputs.portfolio}}
 #         start_date: ${{inputs.}}
