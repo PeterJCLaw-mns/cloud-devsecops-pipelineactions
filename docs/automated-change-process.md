@@ -85,8 +85,8 @@ Please refer below high level overview on Automated CR for Phase 1 - 4 wall chan
 ![image](https://user-images.githubusercontent.com/19665606/221855811-98782e2e-81bb-449f-9530-99ea5bde80c3.png)
 
 Reference workflows for this Automated CR, <br>
-<a href="https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/cloud9-devsecops-automated-cr-workflow.yml">Create CR</a> <br>
-<a href="https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/bmc_update_cr_comp_actions.yml">Update CR</a>
+<a href="https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/cloud9-devsecops-automated-cr-workflow.yml">QA Create CR</a> <br>
+<a href="https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/bmc_update_cr_comp_actions.yml">QA Update CR</a>
 
 ### **How to Consume - Production**:
 
@@ -148,7 +148,7 @@ Snippet to be added **after** Production deployment step, also add a condition t
 | 2 | Change Implementation Start Date (YYYY-MM-DDTHH:MM:SS).Provide future date | Input your Scheduled start date in the format, YYYY-MM-DDTHH:MM:SS and also provide future time | 2023-01-28T05:00:00 | mandatory | 
 | 3 | Change Implementation End Date (YYYY-MM-DDTHH:MM:SS).Provide future date | Input your Scheduled end date in the format, YYYY-MM-DDTHH:MM:SS and also provide future time and value greater than start date | 2023-01-28T08:00:00 | mandatory | 
 | 4 | Application Name | Input your Application name | Transport Management System (TMS) | mandatory | 
-| 5 | Change Description | Input your Change description | Sample: This change is about the enabling logging in the application | mandatory | 
+| 5 | Change Description | Input your Change description along with Impact statement, Test evidence links | Sample: This change is about the enabling logging in the application | mandatory | 
 | 6 | Change Category | Input your Change Category | Application | mandatory | 
 | 7 | Outage Required? | Input if your change requires outage | Yes/No | mandatory | 
 | 8 | Product 4 Wall Change? | Input if your change is Product 4 wall change | Yes | mandatory | 
@@ -164,5 +164,5 @@ Please refer below high level overview on Automated CR for Phase 1 - 4 wall chan
 ![image](https://user-images.githubusercontent.com/19665606/221855811-98782e2e-81bb-449f-9530-99ea5bde80c3.png)
 
 Reference workflows for this Automated CR, <br>
-<a href="https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/cloud9-devsecops-automated-cr-prod-workflow.yml">Create CR</a> <br>
-<a href="https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/prod_cr_update.yml">Update CR</a>
+<a href="https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/cloud9-devsecops-automated-cr-prod-workflow.yml">PROD Create CR</a> <br>
+<a href="https://github.com/DigitalInnovation/cloud-devsecops-demo/blob/main/.github/workflows/prod_cr_update.yml">PROD Update CR</a>
