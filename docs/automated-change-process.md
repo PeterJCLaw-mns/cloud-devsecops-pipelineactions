@@ -1,6 +1,6 @@
 ---
 id: automated-cr
-title: Lean Change - Risk & Impact
+title: Automated Change Process
 # prettier-ignore
 description: Lean Change Management - Automated Change Request
 ---
