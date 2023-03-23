@@ -1,3 +1,10 @@
+---
+id: change-risk-impact
+title: Lean Change - Risk & Impact
+# prettier-ignore
+description: Change managment Risk/Impact assessment questionnaire
+---
+
 # **Change Management Risk/Impact Assessment Questionnaire**
  - [ ] The preferred Change window for the change execution is correct and a safe time (non-business/ trading hours wherever possible and not to conflict with business events) to do this change with zero-downtime deployment
 - [ ] Change roll back plan is available and tested to ensure changes can be reverted quickly to avoid impacts within the agreed change window
