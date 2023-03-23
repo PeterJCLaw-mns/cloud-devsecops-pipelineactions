@@ -1,5 +1,5 @@
 name: 'BMC Helix Integration & CR creation'
-description: 'Deployment using helm charts'
+description: 'Auto CR create workflow'
 
 inputs:
   action:
@@ -64,7 +64,7 @@ runs:
   steps:
     - name: Create new CR 
       id: create-cr
-      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr/create-cr@branch-bmc-helix-action
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr-qa/create-cr@v1.2.22
       with:
         portfolio: ${{inputs.portfolio}}
         start_date: ${{inputs.start_date}}
@@ -87,7 +87,7 @@ runs:
      
     - name: Update CR 
       id: update-cr
-      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr/update-cr@branch-bmc-helix-action
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/bmc-helix-cr-qa/update-cr@v1.2.22
       with:
 #         portfolio: ${{inputs.portfolio}}
 #         start_date: ${{inputs.}}
@@ -112,60 +112,4 @@ runs:
   
   
     
-  
-  
-  
-  
-#     - name: Get BMC Remedy API token
-#       id: bmcremedylogin
-#       uses: fjogeleit/http-request-action@master
-#       with:
-#         url: "${{inputs.remedy_url}}/api/jwt/login"  
-#         method: 'POST'
-#         contentType: application/x-www-form-urlencoded     
-#         data: '{"username": "${{inputs.bmc_username}}", "password": "${{ inputs.bmc_password }}"}'
-     
-     
-     
-     
-#      - name: Update CR for Implementation in Progress
-#         uses: fjogeleit/http-request-action@master
-#         with:
-#           url: 'https://mnscorp.jitterbit.eu/mnscorp-dev-ca/gitHubAutoCr/updatecr'        
-#           method: 'POST'
-#           timeout: 80000
-#           username: ${{inputs.bmc_username}}
-#           password: ${{ inputs.bmc_password }}
-#           #All dates passed here will be dynamically parameterized, hence no need to get it from the Engineers
-#           data: >-
-#             {
-#               "change_request_id": "${{ github.event.client_payload.change_request_id }}",
-#               "status": "Implementation In Progress",
-#               "status_reason": ""
-#             }
-
-#       - name: Release to Production
-#         run: |
-#           echo "Production Deployment successful"
-#           sleep 10
-
-#       - name: Update CR for Completed status
-#         uses: fjogeleit/http-request-action@master
-#         with:
-#           url: 'https://mnscorp.jitterbit.eu/mnscorp-dev-ca/gitHubAutoCr/updatecr'        
-#           method: 'POST'
-#           timeout: 80000
-#           username: github
-#           password: ${{ secrets.BMC_HELIX_API_PASSWORD }}
-#           #All dates passed here will be dynamically parameterized, hence no need to get it from the Engineers
-#           data: >-
-#             {
-#               "change_request_id": "${{ github.event.client_payload.change_request_id }}",
-#               "status": "Completed",
-#               "status_reason": "Final Review Complete"
-#             }
-
-     
-     
-     
-
+ 
