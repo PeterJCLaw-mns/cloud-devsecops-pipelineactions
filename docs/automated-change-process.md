@@ -9,7 +9,16 @@ description: Lean Change Management - Automated Change Request
 
 As part of the journey towards Continuous Deployment, we have created Automated CR (Change Request) composite actions using which you will be able to create CR, check conflicts through pipeline itself rather than manually raising the CR in BMC Remedy. 
 
-**Tools involved**: BMC Helix iPaaS, BMC Remedy
+**Tools involved**: BMC Helix iPaaS, BMC Remedy, GitHub Actions
+
+**Change Category types:**
+
+- 4 wall change without outage (**Completed** and available for selected Product teams. Please contact CM team to start using this)
+- 4 wall change with outage (In progress)
+- Cross Product change without outage (Not started)
+- Cross Product change with outage (Not started)
+
+**Note:** - Currently this is available only for GitHub actions. We are working on Azure DevOps solution for the Automated Change process. 
 
 ### **How to Consume - Non-Production**:
 
