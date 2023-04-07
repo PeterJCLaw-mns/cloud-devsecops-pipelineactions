@@ -83,7 +83,7 @@ runs:
     - run : echo $RUNNER_NAME $RUNNER_OS $RUNNER_ARCH $RUNNER_TEMP
       shell: bash  
     - name: ========== Deploy project using helm ==========
-      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/helm@v1.2.26
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/helm@v1.2.27
       if: ${{ inputs.is_helm_deployment == 'true' && inputs.release_strategy == 'standard'}}
       with:
         environment: ${{inputs.environment}}
@@ -105,7 +105,7 @@ runs:
         deployment_script_name: ${{inputs.deployment_script_name}}
         
     - name: ========== Deploy project using helm ==========
-      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/helm_blue_green@v1.2.26
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/helm_blue_green@v1.2.27
       if: ${{ inputs.is_helm_deployment == 'true' && inputs.release_strategy != 'standard'}}
       with:
         environment: ${{inputs.environment}}
@@ -129,7 +129,7 @@ runs:
         canary_weightage: ${{inputs.canary_weightage}}  
         
     - name: ========== AZURE WEB APP Deployment ==========
-      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/azure-webapp@v1.2.26
+      uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/CD/azure-webapp@v1.2.27
       if: ${{ inputs.is_azure_webapp_deployment == 'true'}}
       with:
         environment: ${{inputs.environment}}
