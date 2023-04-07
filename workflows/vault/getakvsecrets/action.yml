@@ -18,6 +18,9 @@ inputs:
     required: true
   secret_keys:
     required: false
+  write_to_file:
+    description: option to write the value to a file with the same name in /tmp/key_values
+    required: false
 
 
 runs:
@@ -35,6 +38,8 @@ runs:
     
     - name: get akv info
       run: |
+         mkdir -p /tmp/akv_values
+         
          IFS=, read -ra values <<< "${{inputs.secret_keys}}"
          for v in "${values[@]}"
          do
@@ -53,6 +58,11 @@ runs:
            do
             echo "::add-mask::${line}"
            done <<< $keyValue
+           
+           if [ ${{inputs.write_to_file}} == 'true' ]; then
+            echo "values to /tmp/akv_values/${v}"
+            echo "$keyValue" > "/tmp/akv_values/${v}"
+           fi 
            
            echo "$v<<EOF" >> $GITHUB_ENV
            echo "$keyValue" >> $GITHUB_ENV
