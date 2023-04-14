@@ -1,0 +1,114 @@
+# Appsec Composite action
+name: 'Sending Nofitification Actions'
+description: 'Sending email/ microsoft teams notification'
+inputs:
+  send_mail_notification:
+    required: false
+  sendgrid_api_key:
+    required: false
+  from_mail:
+    required: false
+  to_mails:
+    required: false
+  subject:   
+    required: false
+    default: 'SendGrid Email Notification - Test'
+  type_of_the_body:
+    required: false
+    default: 'plain'
+  email_body:  
+    required: false
+    default: 'Testing SendGrid Email Notification'
+  send_msteams_notification:
+    required: false
+  webhook_url_teams:
+    required: false
+  notification_summary:
+    required: false  
+  github_token: 
+     required: false
+  notification_color:
+    required: false
+    default: 'ffc107'
+  time_zone:
+    required: false
+
+runs:
+  using: "composite"
+  steps:      
+##################  SENDGRID EMIL NOTIFICATION ############################    
+
+  - run: |
+       echo argument for send_mail_notification = ${{inputs.send_mail_notification}}
+       echo sendgrid_api_key = ${{inputs.sendgrid_api_key}}
+       echo from_mail = ${{inputs.from_mail}}
+       echo to_mails = ${{inputs.to_mails}}
+    shell: bash
+    if: (inputs.send_mail_notification == 'true' && inputs.sendgrid_api_key != ''  && inputs.from_mail != ''  && inputs.to_mails != '' )
+  - name: Message
+    run: |
+       echo #===================================================================================================#
+    shell: bash   
+    if: (inputs.send_mail_notification == 'true' && inputs.sendgrid_api_key != ''  && inputs.from_mail != ''  && inputs.to_mails != '' )
+  - name: Message
+    run: |
+       echo #                                     Sending Mail Notification                                           #
+    shell: bash
+    if: (inputs.send_mail_notification == 'true' && inputs.sendgrid_api_key != ''  && inputs.from_mail != ''  && inputs.to_mails != '' )
+  - name: Message
+    run: |
+       echo #===================================================================================================#
+    shell: bash
+    if: (inputs.send_mail_notification == 'true' && inputs.sendgrid_api_key != ''  && inputs.from_mail != ''  && inputs.to_mails != '' )
+  
+  - name: Sending Mail Notification
+    uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/notification/mail@noti
+    with:      
+      sendgrid_api_key: ${{ inputs.sendgrid_api_key }}
+      from_mail: ${{ inputs.from_mail }}
+      to_mails: ${{ inputs.to_mails }}
+      subject: ${{ inputs.subject }}
+      type_of_the_body: ${{ inputs.type_of_the_body }}
+      email_body: ${{ inputs.email_body }}
+    if: (inputs.send_mail_notification == 'true' && inputs.sendgrid_api_key != ''  && inputs.from_mail != ''  && inputs.to_mails != '' )
+  
+  - name: Message
+    run: |
+       echo #===================================================================================================#
+    shell: bash
+    if: (inputs.send_mail_notification == 'true' && inputs.sendgrid_api_key != ''  && inputs.from_mail != ''  && inputs.to_mails != '' )
+ 
+ ##################  SENDING TEAMS NOTIFICATION ############################
+  - name: Message
+    run: |
+       echo #===================================================================================================#
+    shell: bash   
+    if: ( inputs.send_msteams_notification == 'true' && inputs.webhook_url_teams != ''  && inputs.github_token != '' )
+  - name: Message
+    run: |
+       echo #                                     Sending Microsoft Teams Notification                                           #
+    shell: bash
+    if: ( inputs.send_msteams_notification == 'true' && inputs.webhook_url_teams != ''  && inputs.github_token != '' )
+  - name: Message
+    run: |
+       echo #===================================================================================================#
+    shell: bash
+    if: ( inputs.send_msteams_notification == 'true' && inputs.webhook_url_teams != ''  && inputs.github_token != '' )
+#   - run: echo Hello,  You are Executing teams notification.
+#     shell: bash
+  - name: Notify dedicated teams channel
+    uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/notification/teams@noti
+    with:
+      github_token: ${{ inputs.github_token }} 
+      webhook_url_teams: ${{ inputs.webhook_url_teams}}
+      notification_summary: ${{ inputs.notification_summary}}
+      notification_color: ${{ inputs.notification_color}} # ffc107
+#         timezone: ${{ inputs.time_zone}} # ex: America/Denver (by default it will take UTC time)
+    if: ( inputs.send_msteams_notification == 'true' && inputs.webhook_url_teams != ''  && inputs.github_token != '' )
+    
+  - name: Message
+    run: |
+       echo #===================================================================================================#
+    shell: bash
+    if: ( inputs.send_msteams_notification == 'true' && inputs.webhook_url_teams != ''  && inputs.github_token != '' )
+    
