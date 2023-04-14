@@ -1,0 +1,29 @@
+# A GitHub Action that sends customizable notifications to a dedicated Microsoft Teams channel
+name: 'DevSecOps Teams notification Actions'
+description: 'Teams notification with custom messages'
+
+inputs:
+  webhook_url_teams:
+    required: true
+  notification_summary:
+    required: true
+  github_token: 
+     required: true
+  notification_color:
+    required: false
+  time_zone:
+    required: false
+  
+runs:
+  using: "composite"
+  steps:
+#     - run: echo Hello, You are Executing teams notification.
+#       shell: bash
+    - name: Notify dedicated teams channel
+      uses: jdcargile/ms-teams-notification@v1.3
+      with:
+        github-token: ${{ inputs.github_token }} 
+        ms-teams-webhook-uri: ${{ inputs.webhook_url_teams}}
+        notification-summary: ${{ inputs.notification_summary}}
+        notification-color: ${{ inputs.notification_color}} # ffc107
+#         timezone: ${{ inputs.time_zone}} # ex: America/Denver (by default it will take UTC time)
