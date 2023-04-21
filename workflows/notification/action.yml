@@ -62,7 +62,7 @@ runs:
     if: (inputs.send_mail_notification == 'true' && inputs.sendgrid_api_key != ''  && inputs.from_mail != ''  && inputs.to_mails != '' )
   
   - name: Sending Mail Notification
-    uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/notification/mail@noti
+    uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/notification/mail@feature/notification
     with:      
       sendgrid_api_key: ${{ inputs.sendgrid_api_key }}
       from_mail: ${{ inputs.from_mail }}
