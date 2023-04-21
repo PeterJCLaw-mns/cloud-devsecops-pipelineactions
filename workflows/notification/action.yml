@@ -97,7 +97,7 @@ runs:
 #   - run: echo Hello,  You are Executing teams notification.
 #     shell: bash
   - name: Notify dedicated teams channel
-    uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/notification/teams@noti
+    uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/notification/teams@feature/notification
     with:
       github_token: ${{ inputs.github_token }} 
       webhook_url_teams: ${{ inputs.webhook_url_teams}}
