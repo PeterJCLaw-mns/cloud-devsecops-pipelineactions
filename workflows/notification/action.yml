@@ -62,7 +62,7 @@ runs:
     if: (inputs.send_mail_notification == 'true' && inputs.sendgrid_api_key != ''  && inputs.from_mail != ''  && inputs.to_mails != '' )
   
   - name: Sending Mail Notification
-    uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/notification/mail@feature/notification
+    uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/notification/mail@latest
     with:      
       sendgrid_api_key: ${{ inputs.sendgrid_api_key }}
       from_mail: ${{ inputs.from_mail }}
@@ -97,7 +97,7 @@ runs:
 #   - run: echo Hello,  You are Executing teams notification.
 #     shell: bash
   - name: Notify dedicated teams channel
-    uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/notification/teams@feature/notification
+    uses: DigitalInnovation/cloud-devsecops-pipelineactions/workflows/notification/teams@latest
     with:
       github_token: ${{ inputs.github_token }} 
       webhook_url_teams: ${{ inputs.webhook_url_teams}}
