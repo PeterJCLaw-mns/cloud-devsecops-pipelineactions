@@ -128,7 +128,7 @@ runs:
           helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}' --create-namespace --atomic
         else
           echo " Using full image name and tag provided as inputs "
-          helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' --set 'image.repository=${{ inputs.image_name }}:${{inputs.image_tag}}' --set 'image.name=${{ inputs.image_name }}' --set 'image.tag=${{inputs.image_tag}}'  ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}' --create-namespace --atomic
+          helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' --set 'image.repository=${{ inputs.image_name }}:${{inputs.image_tag}}' --set 'image.name=${{ inputs.image_name }}' --set 'image.tag=${{inputs.image_tag}}' --set 'image.repository=${{ inputs.image_name }}:${{inputs.image_tag}}' --set 'dockerImage=${{ inputs.image_name }}' --set 'dockerTag=${{inputs.image_tag}}'  ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}' --create-namespace --atomic
         fi
        
       shell: bash
@@ -143,7 +143,7 @@ runs:
           helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}'
         else
           echo " Using full image name and tag provided as inputs "
-          helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' --set 'image.repository=${{ inputs.image_name }}:${{inputs.image_tag}}' --set 'image.name=${{ inputs.image_name }}' --set 'image.tag=${{inputs.image_tag}}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}'
+          helm upgrade --install ${{inputs.application_release_name}}  . '--values=${{ inputs.helm_values_file }}' --set 'image.repository=${{ inputs.image_name }}:${{inputs.image_tag}}' --set 'image.name=${{ inputs.image_name }}' --set 'image.tag=${{inputs.image_tag}}' --set 'dockerImage=${{ inputs.image_name }}' --set 'dockerTag=${{inputs.image_tag}}' ${{inputs.helm_argument}} '--namespace=${{inputs.cluster_namespace}}'
         fi
         
       shell: bash
