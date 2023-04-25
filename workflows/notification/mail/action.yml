@@ -1,0 +1,58 @@
+# SendGrid Mail Notification
+name: 'SendGrid Mail Notification Action'
+description: 'Sending Email Notification'
+
+inputs:
+  sendgrid_api_key:
+    required: true
+  from_mail:
+    required: true
+  to_mails:
+    required: true
+  subject:   
+    required: false
+    default: 'SendGrid Email Notification - Test'
+  type_of_the_body:
+    required: false
+    default: 'plain'
+  email_body: 
+    required: false
+    default: 'Testing SendGrid Email Notification'
+        
+runs:
+  using: "composite"
+  steps:
+  - name: Installing Dependencies
+    if: (inputs.sendgrid_api_key != ''  && inputs.from_mail != ''  && inputs.to_mails != '' )
+    shell: bash
+    run: |
+        pip install sendgrid
+  - name: SendGrid Mail Notification Action
+    if: (inputs.sendgrid_api_key != ''  && inputs.from_mail != ''  && inputs.to_mails != '' )
+    env:
+      SENDGRID_API_KEY: "${{ inputs.sendgrid_api_key }}"
+    run: |
+        import sendgrid
+        import json
+        import os
+        from sendgrid.helpers.mail import Mail, Email, To, Content
+
+        from_email = Email("${{ inputs.from_mail }}")  
+        tomail =  "${{ inputs.to_mails }}".split(",")
+        to_email = tomail
+        typing = "${{ inputs.type_of_the_body }}"
+        content = Content(f"text/{typing}", "${{ inputs.email_body }}" )
+        mail = Mail(from_email, to_email, "${{ inputs.subject }}", content)
+        
+        # Get a JSON-ready representation of the Mail object
+        mail_json = mail.get()
+        print(mail_json)
+        # Send an HTTP POST request to /mail/send
+        sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+        response = sg.client.mail.send.post(request_body=mail_json)
+        if str(response.status_code) == '202':
+           print("Email sent successfully")
+        else:
+           print("[ERROR] Unable to send Email notification")
+           sys.exit(1)          
+    shell: python

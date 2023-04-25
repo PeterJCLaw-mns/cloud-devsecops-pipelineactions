@@ -1,0 +1,20 @@
+name: PRs reviews reminder
+on:
+   schedule:
+    # Automatically run on 1st and 15th day of every month.
+   - cron: '30 11 1,15 * *'
+# on: ["push", "pull_request"]
+# on: workflow_dispatch
+jobs:
+  pr-reviews-reminder:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: davideviolante/pr-reviews-reminder-action@v2.6.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACTION_UPDATER }}
+      with:
+        webhook-url: '${{ secrets.WEBHOOK_URL_PRNOTIFY }}' # Required
+        provider: 'msteams' # Required 
+#         channel: 'Composite-PR Reviews' # Optional, eg: #general
+#         github-provider-map: '' # Optional, eg: DavideViolante:UEABCDEFG,foobar:UAABCDEFG
+#         ignore-label: '' # Optional, eg: no-reminder,ignore me   
