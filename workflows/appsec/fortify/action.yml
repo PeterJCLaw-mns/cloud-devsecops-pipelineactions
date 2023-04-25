@@ -10,7 +10,7 @@ inputs:
   sast_api_secret:
     required: true
   sast_scan_options:
-    required: true
+    required: false
   sast_scan_notes:
     required: false
   application_name:
